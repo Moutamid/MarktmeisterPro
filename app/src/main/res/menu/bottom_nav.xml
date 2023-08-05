@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_scan"
+        android:icon="@drawable/barcodescanner"
+        android:title="Scan" />
+    <item
+        android:id="@+id/nav_saved"
+        android:icon="@drawable/favorite"
+        android:title="Competition" />
+    <item
+        android:id="@+id/nav_export"
+        android:icon="@drawable/sharesolid"
+        android:title="Export" />
+</menu>
