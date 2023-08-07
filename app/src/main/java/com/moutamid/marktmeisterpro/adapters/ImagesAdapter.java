@@ -37,15 +37,9 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesVH> 
     public void onBindViewHolder(@NonNull ImagesVH holder, int position) {
         StallModel model = list.get(holder.getAdapterPosition());
 
-        if (model.isAdd()){
-            holder.add.setVisibility(View.VISIBLE);
-            holder.data.setVisibility(View.GONE);
-            holder.mainCard.setCardBackgroundColor(context.getResources().getColor(R.color.background));
-        } else {
-            Glide.with(context).load(model.getImageURL()).into(holder.image);
-            holder.cat.setText(model.getItem());
-            holder.type.setText(model.getBeschreibung());
-        }
+        Glide.with(context).load(model.getImageURL()).into(holder.image);
+        holder.cat.setText(model.getItem());
+        holder.type.setText(model.getBeschreibung());
 
     }
 

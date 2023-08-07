@@ -16,6 +16,7 @@ import com.moutamid.marktmeisterpro.utilis.Constants;
 
 public class MainActivity extends AppCompatActivity  implements BottomNavigationView.OnNavigationItemSelectedListener{
     ActivityMainBinding binding;
+    public BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,12 +24,13 @@ public class MainActivity extends AppCompatActivity  implements BottomNavigation
         setContentView(binding.getRoot());
         Constants.checkApp(this);
 
+        bottomNavigationView = binding.bottomNav;
 
-        binding.bottomNav.setItemActiveIndicatorColor(ColorStateList.valueOf(getResources().getColor(R.color.bottomNavIndicator)));
-        binding.bottomNav.setItemActiveIndicatorWidth(100);
-        binding.bottomNav.setItemActiveIndicatorHeight(100);
-        binding.bottomNav.setOnNavigationItemSelectedListener(this);
-        binding.bottomNav.setSelectedItemId(R.id.nav_scan);
+        bottomNavigationView.setItemActiveIndicatorColor(ColorStateList.valueOf(getResources().getColor(R.color.bottomNavIndicator)));
+        bottomNavigationView.setItemActiveIndicatorWidth(100);
+        bottomNavigationView.setItemActiveIndicatorHeight(100);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+        bottomNavigationView.setSelectedItemId(R.id.nav_scan);
     }
 
     @Override

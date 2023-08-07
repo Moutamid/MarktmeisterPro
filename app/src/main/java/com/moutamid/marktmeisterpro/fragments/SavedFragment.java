@@ -2,15 +2,20 @@ package com.moutamid.marktmeisterpro.fragments;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.fxn.stash.Stash;
+import com.moutamid.marktmeisterpro.MainActivity;
 import com.moutamid.marktmeisterpro.R;
 import com.moutamid.marktmeisterpro.adapters.SavedMainAdapter;
 import com.moutamid.marktmeisterpro.databinding.FragmentSavedBinding;
@@ -19,10 +24,14 @@ import com.moutamid.marktmeisterpro.models.StallModel;
 import com.moutamid.marktmeisterpro.utilis.Constants;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 public class SavedFragment extends Fragment {
     FragmentSavedBinding binding;
+    ArrayList<Stall> stalls;
+    SavedMainAdapter adapter;
     public SavedFragment() {
         // Required empty public constructor
     }
@@ -34,37 +43,75 @@ public class SavedFragment extends Fragment {
         binding.stallListRC.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.stallListRC.setHasFixedSize(false);
 
-        getList();
+        MainActivity activity = (MainActivity) requireActivity();
+
+        binding.filter.setOnClickListener(v -> {
+            showPopupMenu(v);
+        });
+
+        binding.search.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        binding.scan.setOnClickListener(v -> {
+            if (activity!=null){
+               activity.bottomNavigationView.setSelectedItemId(R.id.nav_scan);
+            }
+        });
 
         return binding.getRoot();
     }
 
-    private void getList() {
-        ArrayList<Stall> stalls = new ArrayList<>();
-        ArrayList<StallModel> Geschaft = Stash.getArrayList(Constants.Geschaft, StallModel.class);
-        ArrayList<StallModel> Anschluss = Stash.getArrayList(Constants.Anschluss, StallModel.class);
-        ArrayList<StallModel> Auslage = Stash.getArrayList(Constants.Auslage, StallModel.class);
-        ArrayList<StallModel> Dokumente = Stash.getArrayList(Constants.Dokumente, StallModel.class);
-
-        Log.d("CHECKIN123", "Geschäft size " + Geschaft.size() );
-        Log.d("CHECKIN123", "Anschluss size " + Anschluss.size() );
-        Log.d("CHECKIN123", "Auslage size " + Auslage.size() );
-        Log.d("CHECKIN123", "Dokumente size " + Dokumente.size() );
-
-        if (Geschaft.size() > 0) {
-            stalls.add(new Stall("Geschäft", Geschaft));
-        }  if (Anschluss.size() > 0) {
-            stalls.add(new Stall("Anschlüsse", Anschluss));
-        }  if (Auslage.size() > 0) {
-            stalls.add(new Stall("Auslage", Auslage));
-        }  if (Dokumente.size() > 0) {
-            stalls.add(new Stall("Dokumente", Dokumente));
-        }
-
-        Log.d("CHECKIN123", "List size " + stalls.size() );
-
-        SavedMainAdapter adapter = new SavedMainAdapter(requireContext(), stalls);
+    @Override
+    public void onResume() {
+        super.onResume();
+        stalls = Stash.getArrayList(Constants.STALL_LIST, Stall.class);
+        Collections.reverse(stalls);
+        adapter = new SavedMainAdapter(requireContext(), stalls);
         binding.stallListRC.setAdapter(adapter);
-
+        adapter.notifyDataSetChanged();
     }
+
+    private void showPopupMenu(View v) {
+        PopupMenu popupMenu = new PopupMenu(requireContext(), v);
+        popupMenu.getMenuInflater().inflate(R.menu.filter_menu, popupMenu.getMenu());
+
+        // Set a listener for menu item clicks
+        popupMenu.setOnMenuItemClickListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.filter_AZ) {
+                stalls.sort((obj1, obj2) -> obj1.getName().compareToIgnoreCase(obj2.getName()));
+                adapter.notifyDataSetChanged();
+                return true;
+            } else if (itemId == R.id.filter_RO) {
+                if (item.getTitle().toString().equals("Recent To Old")) {
+                    item.setTitle("Old To Recent");
+                } else {
+                    item.setTitle("Recent To Old");
+                }
+                Collections.reverse(stalls);
+                adapter.notifyDataSetChanged();
+                return true;
+            }
+
+            return false;
+        });
+
+        popupMenu.show();
+    }
+
 }

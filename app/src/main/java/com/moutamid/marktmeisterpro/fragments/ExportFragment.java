@@ -12,8 +12,6 @@ import com.moutamid.marktmeisterpro.R;
 
 public class ExportFragment extends Fragment {
 
-
-
     public ExportFragment() {
         // Required empty public constructor
     }

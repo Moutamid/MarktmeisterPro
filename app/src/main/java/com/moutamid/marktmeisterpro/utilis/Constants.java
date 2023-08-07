@@ -43,11 +43,13 @@ public class Constants {
     public static final String NAME = "NAME";
     public static final String SCAN_RESULT = "SCAN_RESULT";
     public static final String applicationID = "applicationID";
+    public static final String IMAGE = "IMAGE";
     public static final String IMAGE_CAPTURE = "IMAGE_CAPTURE";
     public static final String DAY_OR_NIGHT = "DAY_OR_NIGHT";
     public static final String STALL_LIST = "STALL_LIST";
     public static final String SELECTION_CAT = "SELECTION_CAT";
     public static final String SELECTION_CAT_TYPE = "SELECTION_CAT_TYPE";
+    public static final String ALL_LIST = "ALL_LIST";
     public static final String Geschaft = "Geschäft";
     public static final String Anschluss = "Anschluss";
     public static final String Auslage = "Auslage";
@@ -90,27 +92,37 @@ public class Constants {
             fos.close();
             Uri contentUri = FileProvider.getUriForFile(context, "com.moutamid.marktmeisterpro.fileprovider", imageFile);
             String image = contentUri.toString();
-            if (Stash.getString(Constants.SELECTION_CAT).equals("Geschäft")) {
-                ArrayList<StallModel> list = Stash.getArrayList(Constants.Geschaft, StallModel.class);
-                list.add(new StallModel(Stash.getString(Constants.applicationID), Stash.getString(Constants.NAME), Stash.getString(Constants.SELECTION_CAT),
-                        Stash.getString(Constants.SELECTION_CAT_TYPE), "ongoing", Constants.getFormatedDate(new Date().getTime()), image, false));
-                Stash.put(Constants.Geschaft, list);
-            } else if (Stash.getString(Constants.SELECTION_CAT).equals("Anschlüsse")) {
-                ArrayList<StallModel> list = Stash.getArrayList(Constants.Anschluss, StallModel.class);
-                list.add(new StallModel(Stash.getString(Constants.applicationID), Stash.getString(Constants.NAME), Stash.getString(Constants.SELECTION_CAT),
-                        Stash.getString(Constants.SELECTION_CAT_TYPE), "ongoing", Constants.getFormatedDate(new Date().getTime()), image, false));
-                Stash.put(Constants.Anschluss, list);
-            } else if (Stash.getString(Constants.SELECTION_CAT).equals("Auslage")) {
-                ArrayList<StallModel> list = Stash.getArrayList(Constants.Auslage, StallModel.class);
-                list.add(new StallModel(Stash.getString(Constants.applicationID), Stash.getString(Constants.NAME), Stash.getString(Constants.SELECTION_CAT),
-                        Stash.getString(Constants.SELECTION_CAT_TYPE), "ongoing", Constants.getFormatedDate(new Date().getTime()), image, false));
-                Stash.put(Constants.Auslage, list);
-            } else if (Stash.getString(Constants.SELECTION_CAT).equals("Dokumente")) {
-                ArrayList<StallModel> list = Stash.getArrayList(Constants.Dokumente, StallModel.class);
-                list.add(new StallModel(Stash.getString(Constants.applicationID), Stash.getString(Constants.NAME), Stash.getString(Constants.SELECTION_CAT),
-                        Stash.getString(Constants.SELECTION_CAT_TYPE), "ongoing", Constants.getFormatedDate(new Date().getTime()), image, false));
-                Stash.put(Constants.Dokumente, list);
+            String name = Stash.getString(Constants.NAME);
+            ArrayList<StallModel> list = Stash.getArrayList(name, StallModel.class);
+            list.add(new StallModel(Stash.getString(Constants.applicationID), Stash.getString(Constants.NAME), Stash.getString(Constants.SELECTION_CAT),
+                    Stash.getString(Constants.SELECTION_CAT_TYPE), "ongoing", Constants.getFormatedDate(new Date().getTime()), image, false));
+            Stash.put(name, list);
+            Stall stall = new Stall(name, list);
+            ArrayList<Stall> stallList = Stash.getArrayList(Constants.STALL_LIST, Stall.class);
+
+            if (stallList.size() > 0){
+                boolean notFound = false;
+                for (int i = 0; i < stallList.size(); i++) {
+                    Stall s = stallList.get(i);
+                    if (s.getName().equals(stall.getName())){
+                        stallList.get(i).setStall(list);
+                        notFound = false;
+                        break;
+                    } else {
+                        notFound = true;
+                    }
+                }
+
+                if (notFound){
+                    stallList.add(stall);
+                }
+
+            } else {
+                stallList.add(stall);
             }
+
+            Stash.put(Constants.STALL_LIST, stallList);
+
             Toast.makeText(context, "Image saved", Toast.LENGTH_SHORT).show();
             context.startActivity(new Intent(context, MainActivity.class));
             activity.finish();

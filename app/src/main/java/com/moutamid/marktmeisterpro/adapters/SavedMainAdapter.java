@@ -5,27 +5,34 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fxn.stash.Stash;
 import com.moutamid.marktmeisterpro.R;
 import com.moutamid.marktmeisterpro.activities.SavedImagesActivity;
 import com.moutamid.marktmeisterpro.models.Stall;
 import com.moutamid.marktmeisterpro.models.StallModel;
+import com.moutamid.marktmeisterpro.utilis.Constants;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
-public class SavedMainAdapter extends RecyclerView.Adapter<SavedMainAdapter.SavedVH> {
+public class SavedMainAdapter extends RecyclerView.Adapter<SavedMainAdapter.SavedVH> implements Filterable {
 
     Context context;
     ArrayList<Stall> list;
+    ArrayList<Stall> stallAll;
 
     public SavedMainAdapter(Context context, ArrayList<Stall> list) {
         this.context = context;
         this.list = list;
+        this.stallAll = new ArrayList<>(list);
     }
 
     @NonNull
@@ -42,6 +49,7 @@ public class SavedMainAdapter extends RecyclerView.Adapter<SavedMainAdapter.Save
         holder.name.setText(stall.getName());
 
         holder.itemView.setOnClickListener(v -> {
+            Stash.put(Constants.IMAGE, stall.getName());
             context.startActivity(new Intent(context, SavedImagesActivity.class));
         });
 
@@ -60,6 +68,41 @@ public class SavedMainAdapter extends RecyclerView.Adapter<SavedMainAdapter.Save
         holder.recyclerView.setAdapter(childItemAdapter);
         holder.recyclerView.setRecycledViewPool(viewPool);
     }
+
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+
+    Filter filter = new Filter() {
+
+        //run on background thread
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            ArrayList<Stall> filterList = new ArrayList<>();
+            if (charSequence.toString().isEmpty()){
+                filterList.addAll(stallAll);
+            } else {
+                for (Stall listModel : stallAll){
+                    if (listModel.getName().toLowerCase().contains(charSequence.toString().toLowerCase())){
+                        filterList.add(listModel);
+                    }
+                }
+            }
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filterList;
+
+            return filterResults;
+        }
+
+        //run on Ui thread
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            list.clear();
+            list.addAll((Collection<? extends Stall>) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
 
     @Override
     public int getItemCount() {
