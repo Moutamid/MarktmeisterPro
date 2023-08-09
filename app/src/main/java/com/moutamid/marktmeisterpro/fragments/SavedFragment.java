@@ -43,8 +43,6 @@ public class SavedFragment extends Fragment {
         binding.stallListRC.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.stallListRC.setHasFixedSize(false);
 
-        MainActivity activity = (MainActivity) requireActivity();
-
         binding.filter.setOnClickListener(v -> {
             showPopupMenu(v);
         });
@@ -63,12 +61,6 @@ public class SavedFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
 
-            }
-        });
-
-        binding.scan.setOnClickListener(v -> {
-            if (activity!=null){
-               activity.bottomNavigationView.setSelectedItemId(R.id.nav_scan);
             }
         });
 

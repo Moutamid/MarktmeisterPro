@@ -84,7 +84,10 @@ public class SavedMainAdapter extends RecyclerView.Adapter<SavedMainAdapter.Save
                 filterList.addAll(stallAll);
             } else {
                 for (Stall listModel : stallAll){
-                    if (listModel.getName().toLowerCase().contains(charSequence.toString().toLowerCase())){
+                    if (
+                            listModel.getName().contains(charSequence.toString()) ||
+                            listModel.getApplicationID().contains(charSequence.toString())
+                    ){
                         filterList.add(listModel);
                     }
                 }

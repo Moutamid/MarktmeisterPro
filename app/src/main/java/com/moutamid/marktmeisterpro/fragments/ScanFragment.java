@@ -1,6 +1,7 @@
 package com.moutamid.marktmeisterpro.fragments;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -21,8 +22,10 @@ import com.fxn.stash.Stash;
 import com.moutamid.marktmeisterpro.R;
 import com.moutamid.marktmeisterpro.activities.SelectItemActivity;
 import com.moutamid.marktmeisterpro.databinding.FragmentScanBinding;
+import com.moutamid.marktmeisterpro.models.EventModel;
 import com.moutamid.marktmeisterpro.utilis.Constants;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,10 +43,15 @@ public class ScanFragment extends Fragment {
 
         mCodeScanner = new CodeScanner(requireContext(), binding.scannerView);
         mCodeScanner.setDecodeCallback(result -> requireActivity().runOnUiThread(() -> {
-            Log.d("CHECKIN123", result.getText());
             String res = result.getText();
             String name = "";
             String ID = "";
+            String eventId = "";
+            boolean go = true;
+            if (res.startsWith(" ")){
+                res = res.substring(1);
+            }
+
             if (res.startsWith("ID")){
                 Pattern idPattern = Pattern.compile("ID: (\\d{2}-\\d{2}-\\d{5})");
                 Matcher idMatcher = idPattern.matcher(res);
@@ -55,21 +63,45 @@ public class ScanFragment extends Fragment {
                 if (nameMatcher.find()) {
                     name = nameMatcher.group(1);
                 }
+            } else if (res.startsWith("EventID")) {
+                eventId = extractValue(res, "EventID");
+                ID = extractValue(res, "Application-ID");
+                name = extractValue(res, "name");
+
+                ArrayList<EventModel> ids = Stash.getArrayList(Constants.EventIdLIST, EventModel.class);
+                for (EventModel id : ids) {
+                    go = false;
+                    if (eventId.equals(id.getID())) {
+                        go = true;
+                        break;
+                    }
+                }
             } else {
                 String[] parts = res.split("_");
-
                 if (parts.length >= 2) {
                     name = parts[1];
                     ID = parts[0];
                 }
             }
-            Log.d("CHECKIN123", name);
-            Log.d("CHECKIN123", ID);
-            Stash.put(Constants.NAME, name);
-            Stash.put(Constants.applicationID, ID);
-            Stash.put(Constants.SCAN_RESULT, res);
-            startActivity(new Intent(requireContext(), SelectItemActivity.class));
-            requireActivity().finish();
+            Log.d("CHECKIN123", "RES  " + res);
+            Log.d("CHECKIN123", "NAME  " + name);
+            Log.d("CHECKIN123", "ID  " + ID);
+
+            if (go) {
+                Stash.put(Constants.NAME, name);
+                Stash.put(Constants.applicationID, ID);
+                Stash.put(Constants.SCAN_RESULT, res);
+                startActivity(new Intent(requireContext(), SelectItemActivity.class));
+                requireActivity().finish();
+            } else {
+                new AlertDialog.Builder(requireContext())
+                        .setMessage("Der QR-Code gehört zu einer anderen Veranstaltung")
+                        .setPositiveButton("Ok", ((dialog, which) -> {
+                            mCodeScanner.startPreview();
+                            dialog.dismiss();
+                        }))
+                        .show();
+            }
         }));
 
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
@@ -77,11 +109,13 @@ public class ScanFragment extends Fragment {
                 shouldShowRequestPermissionRationale(Manifest.permission.CAMERA);
                 shouldShowRequestPermissionRationale(Manifest.permission.READ_MEDIA_IMAGES);
                 shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA,Manifest.permission.READ_MEDIA_IMAGES,Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE);
+                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA,Manifest.permission.READ_MEDIA_IMAGES,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             } else {
                 shouldShowRequestPermissionRationale(Manifest.permission.CAMERA);
                 shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE);
+                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
             }
 
         } else {
@@ -92,6 +126,18 @@ public class ScanFragment extends Fragment {
 
     }
 
+    private String extractValue(String res, String key) {
+        int startIndex = res.indexOf(key + ":");
+        if (startIndex == -1) {
+            return "";
+        }
+        startIndex += key.length() + 2;
+        int endIndex = res.indexOf(";", startIndex);
+        if (endIndex == -1) {
+            endIndex = res.length();
+        }
+        return res.substring(startIndex, endIndex).trim();
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -103,5 +149,17 @@ public class ScanFragment extends Fragment {
                 Toast.makeText(binding.getRoot().getContext(), "Permission is required", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mCodeScanner.startPreview();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mCodeScanner.stopPreview();
     }
 }

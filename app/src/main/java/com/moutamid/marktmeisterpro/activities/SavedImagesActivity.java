@@ -6,6 +6,7 @@ import androidx.appcompat.widget.PopupMenu;
 import android.os.Bundle;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
 import com.fxn.stash.Stash;
 import com.moutamid.marktmeisterpro.R;
 import com.moutamid.marktmeisterpro.adapters.ImagesSubAdapter;
@@ -29,6 +30,8 @@ public class SavedImagesActivity extends AppCompatActivity {
 
         binding.savedRC.setHasFixedSize(false);
         String NAME = Stash.getString(Constants.IMAGE);
+
+        Glide.with(this).load(R.drawable.markt_schwarz).into(binding.logo);
 
         binding.back.setOnClickListener(v -> onBackPressed());
 

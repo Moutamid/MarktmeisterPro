@@ -11,7 +11,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/background</item>
-        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/firasans</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
 

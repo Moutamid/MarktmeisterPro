@@ -16,6 +16,7 @@ import com.moutamid.marktmeisterpro.MainActivity;
 import com.moutamid.marktmeisterpro.R;
 import com.moutamid.marktmeisterpro.databinding.ActivitySelectItemBinding;
 import com.moutamid.marktmeisterpro.utilis.Constants;
+import com.shrikanthravi.library.NightModeButton;
 
 public class SelectItemActivity extends AppCompatActivity {
     ActivitySelectItemBinding binding;
@@ -58,6 +59,9 @@ public class SelectItemActivity extends AppCompatActivity {
             binding.dokumenteBtn.setVisibility(View.VISIBLE);
         });
 
+        Stash.put(Constants.DAY_OR_NIGHT, false);
+
+        binding.switchImage.setOnSwitchListener(isNight -> Stash.put(Constants.DAY_OR_NIGHT, isNight));
 
     }
 
@@ -71,7 +75,6 @@ public class SelectItemActivity extends AppCompatActivity {
         Button btn = (Button) view;
         Stash.put(Constants.SELECTION_CAT, "Geschäft");
         Stash.put(Constants.SELECTION_CAT_TYPE, btn.getText().toString());
-        Stash.put(Constants.DAY_OR_NIGHT, binding.switchImage.isChecked());
         startCamera();
     }
 
@@ -79,7 +82,6 @@ public class SelectItemActivity extends AppCompatActivity {
         Button btn = (Button) view;
         Stash.put(Constants.SELECTION_CAT, "Anschlüsse");
         Stash.put(Constants.SELECTION_CAT_TYPE, btn.getText().toString());
-        Stash.put(Constants.DAY_OR_NIGHT, binding.switchImage.isChecked());
         startCamera();
     }
 
@@ -87,14 +89,12 @@ public class SelectItemActivity extends AppCompatActivity {
         Button btn = (Button) view;
         Stash.put(Constants.SELECTION_CAT, "Auslage");
         Stash.put(Constants.SELECTION_CAT_TYPE, btn.getText().toString());
-        Stash.put(Constants.DAY_OR_NIGHT, binding.switchImage.isChecked());
         startCamera();
     }
     public void dokumenteClick(View view) {
         Button btn = (Button) view;
         Stash.put(Constants.SELECTION_CAT, "Dokumente");
         Stash.put(Constants.SELECTION_CAT_TYPE, btn.getText().toString());
-        Stash.put(Constants.DAY_OR_NIGHT, binding.switchImage.isChecked());
         startCamera();
     }
 
@@ -102,6 +102,7 @@ public class SelectItemActivity extends AppCompatActivity {
         if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (intent.resolveActivity(getPackageManager()) != null) {
+//  TODO              intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 0);
                 startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
             }
         } else {
@@ -114,12 +115,29 @@ public class SelectItemActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
-            Intent intent = new Intent(this, PictureResultActivity.class);
-            intent.putExtra("imageBitmap", imageBitmap);
-            startActivity(intent);
-            finish();
+            Bitmap capturedBitmap  = (Bitmap) data.getExtras().get("data");
+
+            int width = 0;
+            int height = 0;
+            if (Stash.getString(Constants.Resolution, Constants.MEDIUM).equals(Constants.SMALL)) {
+                width = 240;
+                height = 240;
+            } else if (Stash.getString(Constants.Resolution, Constants.MEDIUM).equals(Constants.MEDIUM)) {
+                width = 640;
+                height = 480;
+            } else if (Stash.getString(Constants.Resolution, Constants.MEDIUM).equals(Constants.LARGE)) {
+                width = 1280;
+                height = 720;
+            }
+
+//            Bitmap resizedBitmap = resizeBitmap(capturedBitmap, width, height);
+
+            Constants.saveImage(SelectItemActivity.this, capturedBitmap);
         }
+    }
+
+    private Bitmap resizeBitmap(Bitmap originalBitmap, int newWidth, int newHeight) {
+        return Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, false);
     }
 
 }

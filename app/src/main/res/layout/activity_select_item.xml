@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:cardBackgroundColor="@color/background"
-        app:cardElevation="8sp"
-        app:cardCornerRadius="0sp">
+        app:cardCornerRadius="0sp"
+        app:cardElevation="8sp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,18 +25,18 @@
                 android:id="@+id/back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/arrow_back"
                 android:layout_marginStart="12sp"
+                android:src="@drawable/arrow_back"
                 app:tint="@color/dark" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="12sp"
                 android:gravity="start|center"
-                android:text="Select Item"
-                android:textSize="22sp"
+                android:text="Neu Scannen"
                 android:textColor="@color/dark"
-                android:layout_marginStart="12sp" />
+                android:textSize="22sp" />
 
         </LinearLayout>
 
@@ -58,132 +58,112 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12sp"
                 android:gravity="center"
                 android:text="Select Item"
-                android:textSize="22sp"
                 android:textColor="@color/dark"
-                android:layout_margin="12sp" />
+                android:textSize="22sp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12sp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="start|center"
-                    android:text="Möchten Sie das Foto als Nacht- oder Tagesbild dokumentieren?"
-                    android:textSize="18sp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="12sp"
-                    android:textColor="@color/dark" />
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/switchImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:thumb="@drawable/thumb"
-                    app:track="@drawable/track" />
-
-            </LinearLayout>
+            <com.shrikanthravi.library.NightModeButton
+                android:id="@+id/switchImage"
+                android:layout_width="wrap_content"
+                android:layout_height="50sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="12sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="start|center"
+                android:layout_marginTop="12sp"
+                android:gravity="center"
                 android:text="Was für ein Foto möchten Sie machen?"
-                android:textSize="18sp"
                 android:textColor="@color/dark"
-                android:layout_marginTop="12sp" />
+                android:textSize="18sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1sp"
-                android:background="@color/dark"
                 android:layout_marginTop="12sp"
-                android:layout_marginBottom="12sp" />
+                android:layout_marginBottom="12sp"
+                android:background="@color/dark" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/geschaft"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="6sp"
                 app:cardBackgroundColor="@color/background"
-                app:strokeWidth="0sp"
-                app:cardElevation="0sp">
+                app:cardCornerRadius="6sp"
+                app:cardElevation="0sp"
+                app:strokeWidth="0sp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="12sp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="12sp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="start|center"
-                        android:textStyle="bold"
-                        android:text="Geschäft"
                         android:drawableLeft="@drawable/swingsolid"
                         android:drawablePadding="12sp"
+                        android:gravity="start|center"
+                        android:text="Geschäft"
+                        android:textColor="@color/dark"
                         android:textSize="22sp"
-                        android:textColor="@color/dark" />
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:id="@+id/geschaftBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10sp"
-                        android:visibility="gone"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:backgroundTint="@color/bottomNav"
+                            android:onClick="geschaftClick"
                             android:text="vorne"
-                            android:backgroundTint="@color/bottomNav"
                             android:textColor="@color/dark"
-                            android:onClick="geschaftClick"
                             android:textSize="18sp" />
 
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:backgroundTint="@color/bottomNav"
+                            android:onClick="geschaftClick"
                             android:text="hinten"
-                            android:backgroundTint="@color/bottomNav"
                             android:textColor="@color/dark"
-                            android:onClick="geschaftClick"
                             android:textSize="18sp" />
 
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:backgroundTint="@color/bottomNav"
+                            android:onClick="geschaftClick"
                             android:text="Seite links"
-                            android:backgroundTint="@color/bottomNav"
                             android:textColor="@color/dark"
-                            android:onClick="geschaftClick"
                             android:textSize="18sp" />
 
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:backgroundTint="@color/bottomNav"
+                            android:onClick="geschaftClick"
                             android:text="Seite rechts"
-                            android:backgroundTint="@color/bottomNav"
                             android:textColor="@color/dark"
-                            android:onClick="geschaftClick"
                             android:textSize="18sp" />
 
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Türen"
                             android:backgroundTint="@color/bottomNav"
-                            android:textColor="@color/dark"
                             android:onClick="geschaftClick"
+                            android:text="Türen"
+                            android:textColor="@color/dark"
                             android:textSize="18sp" />
 
                     </LinearLayout>
@@ -196,69 +176,69 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1sp"
-                android:background="@color/dark"
                 android:layout_marginTop="12sp"
-                android:layout_marginBottom="12sp" />
+                android:layout_marginBottom="12sp"
+                android:background="@color/dark" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/anschlusse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="6sp"
                 app:cardBackgroundColor="@color/background"
-                app:strokeWidth="0sp"
-                app:cardElevation="0sp">
+                app:cardCornerRadius="6sp"
+                app:cardElevation="0sp"
+                app:strokeWidth="0sp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="12sp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="12sp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="start|center"
-                        android:textStyle="bold"
-                        android:text="Anschlüsse"
                         android:drawableLeft="@drawable/flashon"
                         android:drawablePadding="12sp"
+                        android:gravity="start|center"
+                        android:text="Anschlüsse"
+                        android:textColor="@color/dark"
                         android:textSize="22sp"
-                        android:textColor="@color/dark" />
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:id="@+id/anschlusseBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10sp"
-                        android:visibility="gone"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:backgroundTint="@color/bottomNav"
+                            android:onClick="anschlusseClick"
                             android:text="Strom"
-                            android:backgroundTint="@color/bottomNav"
                             android:textColor="@color/dark"
-                            android:onClick="anschlusseClick"
                             android:textSize="18sp" />
 
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:backgroundTint="@color/bottomNav"
+                            android:onClick="anschlusseClick"
                             android:text="Wasser"
-                            android:backgroundTint="@color/bottomNav"
                             android:textColor="@color/dark"
-                            android:onClick="anschlusseClick"
                             android:textSize="18sp" />
 
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Weitere"
                             android:backgroundTint="@color/bottomNav"
-                            android:textColor="@color/dark"
                             android:onClick="anschlusseClick"
+                            android:text="Weitere"
+                            android:textColor="@color/dark"
                             android:textSize="18sp" />
 
                     </LinearLayout>
@@ -271,60 +251,60 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1sp"
-                android:background="@color/dark"
                 android:layout_marginTop="12sp"
-                android:layout_marginBottom="12sp" />
+                android:layout_marginBottom="12sp"
+                android:background="@color/dark" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/auslage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="6sp"
                 app:cardBackgroundColor="@color/background"
-                app:strokeWidth="0sp"
-                app:cardElevation="0sp">
+                app:cardCornerRadius="6sp"
+                app:cardElevation="0sp"
+                app:strokeWidth="0sp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="12sp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="12sp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="start|center"
-                        android:textStyle="bold"
-                        android:text="Auslage"
                         android:drawableLeft="@drawable/sweetsolid"
                         android:drawablePadding="12sp"
+                        android:gravity="start|center"
+                        android:text="Auslage"
+                        android:textColor="@color/dark"
                         android:textSize="22sp"
-                        android:textColor="@color/dark" />
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:id="@+id/auslageBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10sp"
-                        android:visibility="gone"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Sortiment"
                             android:backgroundTint="@color/bottomNav"
-                            android:textColor="@color/dark"
                             android:onClick="auslageClick"
+                            android:text="Sortiment"
+                            android:textColor="@color/dark"
                             android:textSize="18sp" />
 
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Highlights"
                             android:backgroundTint="@color/bottomNav"
-                            android:textColor="@color/dark"
                             android:onClick="auslageClick"
+                            android:text="Highlights"
+                            android:textColor="@color/dark"
                             android:textSize="18sp" />
 
                     </LinearLayout>
@@ -337,78 +317,78 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1sp"
-                android:background="@color/dark"
                 android:layout_marginTop="12sp"
-                android:layout_marginBottom="12sp" />
+                android:layout_marginBottom="12sp"
+                android:background="@color/dark" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/dokumente"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="6sp"
                 app:cardBackgroundColor="@color/background"
-                app:strokeWidth="0sp"
-                app:cardElevation="0sp">
+                app:cardCornerRadius="6sp"
+                app:cardElevation="0sp"
+                app:strokeWidth="0sp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="12sp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="12sp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="start|center"
-                        android:textStyle="bold"
-                        android:text="Dokumente"
                         android:drawableLeft="@drawable/bookmarksolid"
                         android:drawablePadding="12sp"
+                        android:gravity="start|center"
+                        android:text="Dokumente"
+                        android:textColor="@color/dark"
                         android:textSize="22sp"
-                        android:textColor="@color/dark" />
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:id="@+id/dokumenteBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10sp"
-                        android:visibility="gone"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:backgroundTint="@color/bottomNav"
+                            android:onClick="dokumenteClick"
                             android:text="Reisegewerbekarte"
-                            android:backgroundTint="@color/bottomNav"
                             android:textColor="@color/dark"
-                            android:onClick="dokumenteClick"
                             android:textSize="18sp" />
 
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:backgroundTint="@color/bottomNav"
+                            android:onClick="dokumenteClick"
                             android:text="Prüfbuch"
-                            android:backgroundTint="@color/bottomNav"
                             android:textColor="@color/dark"
-                            android:onClick="dokumenteClick"
                             android:textSize="18sp" />
 
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:backgroundTint="@color/bottomNav"
+                            android:onClick="dokumenteClick"
                             android:text="Ausführungsgenehmigung"
-                            android:backgroundTint="@color/bottomNav"
                             android:textColor="@color/dark"
-                            android:onClick="dokumenteClick"
                             android:textSize="18sp" />
 
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Sonstinge"
                             android:backgroundTint="@color/bottomNav"
-                            android:textColor="@color/dark"
                             android:onClick="dokumenteClick"
+                            android:text="Sonstinge"
+                            android:textColor="@color/dark"
                             android:textSize="18sp" />
 
                     </LinearLayout>

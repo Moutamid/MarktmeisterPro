@@ -43,6 +43,12 @@ public class Constants {
     public static final String NAME = "NAME";
     public static final String SCAN_RESULT = "SCAN_RESULT";
     public static final String applicationID = "applicationID";
+    public static final String USER = "USER";
+    public static final String Resolution = "Resolution";
+    public static final String SMALL = "SMALL";
+    public static final String MEDIUM = "MEDIUM";
+    public static final String LARGE = "LARGE";
+    public static final String EventID = "EventID";
     public static final String IMAGE = "IMAGE";
     public static final String IMAGE_CAPTURE = "IMAGE_CAPTURE";
     public static final String DAY_OR_NIGHT = "DAY_OR_NIGHT";
@@ -54,6 +60,7 @@ public class Constants {
     public static final String Anschluss = "Anschluss";
     public static final String Auslage = "Auslage";
     public static final String Dokumente = "Dokumente";
+    public static final String EventIdLIST = "EventIdLIST";
 
     public static String getFormatedDate(long date) {
         return new SimpleDateFormat(DATEFORMATE, Locale.getDefault()).format(date);
@@ -97,7 +104,7 @@ public class Constants {
             list.add(new StallModel(Stash.getString(Constants.applicationID), Stash.getString(Constants.NAME), Stash.getString(Constants.SELECTION_CAT),
                     Stash.getString(Constants.SELECTION_CAT_TYPE), "ongoing", Constants.getFormatedDate(new Date().getTime()), image, false));
             Stash.put(name, list);
-            Stall stall = new Stall(name, list);
+            Stall stall = new Stall(name, Stash.getString(Constants.applicationID), list);
             ArrayList<Stall> stallList = Stash.getArrayList(Constants.STALL_LIST, Stall.class);
 
             if (stallList.size() > 0){

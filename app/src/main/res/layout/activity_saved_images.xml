@@ -30,14 +30,12 @@
                 android:layout_marginStart="12sp"
                 app:tint="@color/dark" />
 
-            <TextView
+            <ImageView
+                android:id="@+id/logo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="start|center"
-                android:text="@string/app_name"
-                android:textSize="22sp"
-                android:textColor="@color/dark"
-                android:layout_marginStart="12sp" />
+                android:padding="5sp"
+                android:src="@drawable/markt_schwarz"/>
 
         </LinearLayout>
 
