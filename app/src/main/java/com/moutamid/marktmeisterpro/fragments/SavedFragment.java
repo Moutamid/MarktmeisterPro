@@ -32,6 +32,7 @@ public class SavedFragment extends Fragment {
     FragmentSavedBinding binding;
     ArrayList<Stall> stalls;
     SavedMainAdapter adapter;
+
     public SavedFragment() {
         // Required empty public constructor
     }
@@ -87,6 +88,9 @@ public class SavedFragment extends Fragment {
 
             if (itemId == R.id.filter_AZ) {
                 stalls.sort((obj1, obj2) -> obj1.getName().compareToIgnoreCase(obj2.getName()));
+                for (Stall s : stalls) {
+                    s.getStall().sort((obj1, obj2) -> obj1.getItem().compareToIgnoreCase(obj2.getItem()));
+                }
                 adapter.notifyDataSetChanged();
                 return true;
             } else if (itemId == R.id.filter_RO) {
@@ -96,6 +100,9 @@ public class SavedFragment extends Fragment {
                     item.setTitle("Recent To Old");
                 }
                 Collections.reverse(stalls);
+                for (Stall s : stalls) {
+                    Collections.reverse(s.getStall());
+                }
                 adapter.notifyDataSetChanged();
                 return true;
             }

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".activities.CameraActivity">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:cardBackgroundColor="@color/black"
+        app:cardCornerRadius="0sp"
+        app:cardElevation="8sp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12sp"
+                android:src="@drawable/arrow_back"
+                app:tint="@color/white" />
+
+            <ImageView
+                android:id="@+id/flash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="12sp"
+                android:visibility="gone"
+                android:src="@drawable/flashon"
+                app:tint="@color/white" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <TextureView
+        android:id="@+id/textureView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:layout_marginBottom="120sp" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/camera"
+        app:strokeWidth="0sp"
+        app:cardBackgroundColor="@color/background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="50sp"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30sp"
+        app:cardElevation="0sp">
+
+        <ImageView
+            android:layout_width="70sp"
+            android:layout_height="70sp"
+            android:src="@drawable/camera"
+            android:padding="15sp" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</RelativeLayout>

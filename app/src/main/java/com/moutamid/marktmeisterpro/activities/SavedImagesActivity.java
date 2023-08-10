@@ -44,8 +44,8 @@ public class SavedImagesActivity extends AppCompatActivity {
             showPopupMenu(v);
         });
 
-
-        binding.totalSize.setText("You have saved "+ list.size() +" images");
+        String im = list.size() > 1 ? " Images" : " Image";
+        binding.totalSize.setText("You have saved "+ list.size() + im);
 
         list.add(new StallModel("", NAME, "", "", "", "", "", true));
         adapter = new ImagesSubAdapter(this, list);

@@ -22,13 +22,14 @@ import com.moutamid.marktmeisterpro.utilis.Constants;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 public class SavedMainAdapter extends RecyclerView.Adapter<SavedMainAdapter.SavedVH> implements Filterable {
 
     Context context;
     ArrayList<Stall> list;
     ArrayList<Stall> stallAll;
-
+    ImagesAdapter childItemAdapter;
     public SavedMainAdapter(Context context, ArrayList<Stall> list) {
         this.context = context;
         this.list = list;
@@ -61,8 +62,8 @@ public class SavedMainAdapter extends RecyclerView.Adapter<SavedMainAdapter.Save
         layoutManager.setInitialPrefetchItemCount(stall.getStall().size());
 
         RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
-
-        ImagesAdapter childItemAdapter = new ImagesAdapter(context, stall.getStall());
+        Collections.reverse(stall.getStall());
+        childItemAdapter = new ImagesAdapter(context, stall.getStall());
         holder.recyclerView.setLayoutManager(layoutManager);
         holder.recyclerView.setHasFixedSize(false);
         holder.recyclerView.setAdapter(childItemAdapter);
