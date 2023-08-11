@@ -165,12 +165,13 @@ public class CameraActivity extends AppCompatActivity {
         String image = imageFile.getAbsolutePath();
         Stash.put("img", image);
         startActivity(new Intent(CameraActivity.this, PictureResultActivity.class));
+        finish();
     }
 
     private void createCameraPreview() {
         try {
             SurfaceTexture texture = previewTextureView.getSurfaceTexture(); // Replace with your preview view
-            assert texture != null;
+//            assert texture != null;
             texture.setDefaultBufferSize(width, height); // Set the dimensions of the preview
 
             Surface surface = new Surface(texture);
@@ -311,7 +312,6 @@ public class CameraActivity extends AppCompatActivity {
             }
         }
     };
-
 
 
 }

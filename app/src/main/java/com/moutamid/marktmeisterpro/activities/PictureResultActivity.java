@@ -31,6 +31,7 @@ import java.util.Date;
 
 public class PictureResultActivity extends AppCompatActivity {
     ActivityPictureResultBinding binding;
+    String path;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +39,7 @@ public class PictureResultActivity extends AppCompatActivity {
         binding = ActivityPictureResultBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        String path = Stash.getString("img");
+        path = Stash.getString("img");
         Log.d("PATH", "Saved  " + path);
         Glide.with(this).load(path).into(binding.image);
 
@@ -81,18 +82,23 @@ public class PictureResultActivity extends AppCompatActivity {
         });
 
         binding.retake.setOnClickListener(v -> {
-            File fileToDelete = new File(path);
-            if (fileToDelete.exists()) {
-                boolean isDeleted = fileToDelete.delete();
-                if (isDeleted) {
-                    startActivity(new Intent(this, CameraActivity.class));
-                    finish();
-                } else {
-                    // Failed to delete file
-                }
-            }
+            onBackPressed();
         });
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        File fileToDelete = new File(path);
+        if (fileToDelete.exists()) {
+            boolean isDeleted = fileToDelete.delete();
+            if (isDeleted) {
+                startActivity(new Intent(this, CameraActivity.class));
+                finish();
+            } else {
+                // Failed to delete file
+            }
+        }
+    }
 }

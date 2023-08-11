@@ -61,11 +61,28 @@
         android:layout_marginBottom="30sp"
         app:cardElevation="0sp">
 
-        <ImageView
-            android:layout_width="70sp"
-            android:layout_height="70sp"
-            android:src="@drawable/camera"
-            android:padding="15sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="60sp"
+                android:layout_height="60sp"
+                android:padding="15sp"
+                android:src="@drawable/camera" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Capture Image"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:layout_marginEnd="12sp"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
 
