@@ -39,7 +39,7 @@ import java.util.Locale;
 public class Constants {
 
     static Dialog dialog;
-    public static final String DATEFORMATE = "dd/MM/yyyy";
+    public static final String DATEFORMATE = "yyMMdd";
     public static final String NAME = "NAME";
     public static final String SCAN_RESULT = "SCAN_RESULT";
     public static final String applicationID = "applicationID";

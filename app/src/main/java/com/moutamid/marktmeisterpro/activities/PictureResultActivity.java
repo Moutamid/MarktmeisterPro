@@ -33,6 +33,7 @@ public class PictureResultActivity extends AppCompatActivity {
     ActivityPictureResultBinding binding;
     String path;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,40 +45,41 @@ public class PictureResultActivity extends AppCompatActivity {
         Glide.with(this).load(path).into(binding.image);
 
         binding.save.setOnClickListener(v -> {
-        String name = Stash.getString(Constants.NAME);
-        ArrayList<StallModel> list = Stash.getArrayList(name, StallModel.class);
-        list.add(new StallModel(Stash.getString(Constants.applicationID), Stash.getString(Constants.NAME), Stash.getString(Constants.SELECTION_CAT),
-                Stash.getString(Constants.SELECTION_CAT_TYPE), "ongoing", Constants.getFormatedDate(new Date().getTime()), path, false));
-        Stash.put(name, list);
-        Stall stall = new Stall(name, Stash.getString(Constants.applicationID), list);
-        ArrayList<Stall> stallList = Stash.getArrayList(Constants.STALL_LIST, Stall.class);
+            String name = Stash.getString(Constants.NAME);
+            ArrayList<StallModel> list = Stash.getArrayList(name, StallModel.class);
+            list.add(new StallModel(Stash.getString(Constants.applicationID), Stash.getString(Constants.NAME), Stash.getString(Constants.SELECTION_CAT),
+                    Stash.getString(Constants.SELECTION_CAT_TYPE), "ongoing", Constants.getFormatedDate(new Date().getTime()), path, false));
+            Stash.put(name, list);
+            Stall stall = new Stall(name, Stash.getString(Constants.applicationID), list);
+            ArrayList<Stall> stallList = Stash.getArrayList(Constants.STALL_LIST, Stall.class);
 
-        if (stallList.size() > 0){
-            boolean notFound = false;
-            for (int i = 0; i < stallList.size(); i++) {
-                Stall s = stallList.get(i);
-                if (s.getName().equals(stall.getName())){
-                    stallList.get(i).setStall(list);
-                    notFound = false;
-                    break;
-                } else {
-                    notFound = true;
+            if (stallList.size() > 0) {
+                boolean notFound = false;
+                for (int i = 0; i < stallList.size(); i++) {
+                    Stall s = stallList.get(i);
+                    if (s.getName().equals(stall.getName())) {
+                        stallList.get(i).setStall(list);
+                        notFound = false;
+                        break;
+                    } else {
+                        notFound = true;
+                    }
                 }
-            }
 
-            if (notFound){
+                if (notFound) {
+                    stallList.add(stall);
+                }
+
+            } else {
                 stallList.add(stall);
             }
 
-        } else {
-            stallList.add(stall);
-        }
+            Stash.put(Constants.STALL_LIST, stallList);
 
-        Stash.put(Constants.STALL_LIST, stallList);
-
-        Toast.makeText(PictureResultActivity.this, "Image saved", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(PictureResultActivity.this, MainActivity.class));
-        finish();
+            Toast.makeText(PictureResultActivity.this, "Image saved", Toast.LENGTH_SHORT).show();
+            Stash.put(Constants.IMAGE, stall.getName());
+            startActivity(new Intent(PictureResultActivity.this, SavedImagesActivity.class));
+            finish();
 
         });
 

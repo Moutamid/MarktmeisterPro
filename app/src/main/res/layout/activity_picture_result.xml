@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="start|center"
-                android:text="Captured Image"
+                android:text="Aufnahme"
                 android:textSize="22sp"
                 android:layout_weight="1"
                 android:textColor="@color/dark"
@@ -36,8 +36,8 @@
                 android:id="@+id/save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text="Save"/>
+                android:text="Speichern"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -64,7 +64,7 @@
             android:textSize="16sp"
             android:backgroundTint="@color/dark_grey"
             android:layout_margin="15sp"
-            android:text="Retake Image"/>
+            android:text="Neu aufnehmen"/>
 
     </LinearLayout>
 

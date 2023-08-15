@@ -114,7 +114,7 @@
                             android:id="@+id/add"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Add"
+                            android:text="Speichern"
                             android:layout_marginTop="10sp"
                             android:backgroundTint="@color/bottomNavIndicator"
                             android:textColor="@color/dark"
@@ -224,7 +224,7 @@
                             android:id="@+id/save"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Sparen"
+                            android:text="Speichern"
                             android:backgroundTint="@color/bottomNavIndicator"
                             android:textColor="@color/dark"
                             android:textSize="18sp" />

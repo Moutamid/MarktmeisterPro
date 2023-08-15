@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.bumptech.glide.Glide;
+import com.fxn.stash.Stash;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.moutamid.marktmeisterpro.databinding.ActivityMainBinding;
 import com.moutamid.marktmeisterpro.fragments.SettingFragment;

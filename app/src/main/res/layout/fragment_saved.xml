@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="12sp"
-        android:hint="Search"
+        android:hint="Suche"
         app:startIconDrawable="@drawable/search">
 
         <com.google.android.material.textfield.TextInputEditText

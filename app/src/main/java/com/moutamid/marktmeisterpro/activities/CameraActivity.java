@@ -152,6 +152,15 @@ public class CameraActivity extends AppCompatActivity {
         if (!storageDir.exists()) {
             storageDir.mkdirs();
         }
+        String tag = "Tag";
+        String name = Stash.getString(Constants.applicationID) + "_" + Stash.getString(Constants.NAME) + "_" +
+                Stash.getString(Constants.SELECTION_CAT) + "_" + Stash.getString(Constants.SELECTION_CAT_TYPE)+ "_" ;
+
+        if (Stash.getString(Constants.SELECTION_CAT).equals("Geschäft")) {
+           name = name + tag + "_" + Constants.getFormatedDate(new Date().getTime());
+        } else {
+            name = name + Constants.getFormatedDate(new Date().getTime());
+        }
         File imageFile = new File(storageDir, "IMG_" + System.currentTimeMillis() + ".jpg");
 
         try (OutputStream os = new FileOutputStream(imageFile)) {
