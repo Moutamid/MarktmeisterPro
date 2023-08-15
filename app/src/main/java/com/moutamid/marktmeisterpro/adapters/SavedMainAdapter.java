@@ -88,7 +88,7 @@ public class SavedMainAdapter extends RecyclerView.Adapter<SavedMainAdapter.Save
                     if (
                             listModel.getName().contains(charSequence.toString()) ||
                             listModel.getApplicationID().contains(charSequence.toString())
-                    ){
+                    ) {
                         filterList.add(listModel);
                     }
                 }

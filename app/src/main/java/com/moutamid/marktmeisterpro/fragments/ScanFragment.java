@@ -67,15 +67,8 @@ public class ScanFragment extends Fragment {
                 eventId = extractValue(res, "EventID");
                 ID = extractValue(res, "Application-ID");
                 name = extractValue(res, "name");
-
-                ArrayList<EventModel> ids = Stash.getArrayList(Constants.EventIdLIST, EventModel.class);
-                for (EventModel id : ids) {
-                    go = false;
-                    if (eventId.equals(id.getID())) {
-                        go = true;
-                        break;
-                    }
-                }
+                EventModel eventModel = (EventModel) Stash.getObject(Constants.EventIdLIST, EventModel.class);
+                go = eventId.equals(eventModel.getID());
             } else {
                 String[] parts = res.split("_");
                 if (parts.length >= 2) {

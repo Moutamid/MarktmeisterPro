@@ -125,10 +125,8 @@ public class SettingFragment extends Fragment {
             if (ID.isEmpty()){
                 Toast.makeText(requireContext(), "Empty Field", Toast.LENGTH_SHORT).show();
             } else {
-                ArrayList<EventModel> ids = Stash.getArrayList(Constants.EventIdLIST, EventModel.class);
                 EventModel eventModel = new EventModel(ID, ort);
-                ids.add(eventModel);
-                Stash.put(Constants.EventIdLIST, ids);
+                Stash.put(Constants.EventIdLIST, eventModel);
                 Toast.makeText(requireContext(), "ID Added", Toast.LENGTH_SHORT).show();
             }
         });
