@@ -162,8 +162,6 @@ public class CameraActivity extends AppCompatActivity {
 
         if (Stash.getString(Constants.SELECTION_CAT).equals("Geschäft")) {
            name = name + tag + "_";
-        } else {
-            name = name + "_";
         }
         String finalName = name;
         File[] matchingFiles = storageDir.listFiles(new FilenameFilter() {
