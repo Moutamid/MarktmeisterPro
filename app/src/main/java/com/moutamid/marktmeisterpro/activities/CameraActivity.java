@@ -46,13 +46,16 @@ import com.moutamid.marktmeisterpro.utilis.Constants;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
 
 public class CameraActivity extends AppCompatActivity {
     ActivityCameraBinding binding;
@@ -152,16 +155,42 @@ public class CameraActivity extends AppCompatActivity {
         if (!storageDir.exists()) {
             storageDir.mkdirs();
         }
-        String tag = Stash.getBoolean(Constants.DAY_OR_NIGHT, false) ? "Tag" : "Nacht";
+
+        String tag = Stash.getBoolean(Constants.DAY_OR_NIGHT, false) ? "Nacht" : "Tag";
         String name = Stash.getString(Constants.applicationID) + "_" + Stash.getString(Constants.NAME) + "_" +
                 Stash.getString(Constants.SELECTION_CAT) + "_" + Stash.getString(Constants.SELECTION_CAT_TYPE)+ "_" ;
 
         if (Stash.getString(Constants.SELECTION_CAT).equals("Geschäft")) {
-           name = name + tag + "_" + Constants.getFormatedDate(new Date().getTime());
+           name = name + tag + "_";
         } else {
-            name = name + Constants.getFormatedDate(new Date().getTime());
+            name = name + "_";
         }
-        File imageFile = new File(storageDir, name);
+        String finalName = name;
+        File[] matchingFiles = storageDir.listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String n) {
+                return n.startsWith(finalName);
+            }
+        });
+
+        int highestNumber = 0;
+        for (File file : matchingFiles) {
+            String fileName = file.getName();
+            int endIndex = fileName.lastIndexOf('_');
+            int number = Integer.parseInt(fileName.substring(endIndex + 1, fileName.lastIndexOf('.')));
+            if (number > highestNumber) {
+                highestNumber = number;
+            }
+        }
+
+        int nextNumber = highestNumber + 1;
+        String newFileName = name + nextNumber + "_" + Constants.getFormatedDate(new Date().getTime()) + ".jpg";
+        Log.d("NAMEEEE", name);
+        Log.d("NAMEEEE", newFileName);
+//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+//        String imageFileName = "IMG_" + timeStamp + ".jpg";
+        File imageFile = new File(storageDir, newFileName);
+
+//      File imageFile = new File(storageDir, name);
 
         try (OutputStream os = new FileOutputStream(imageFile)) {
             os.write(imageBytes);

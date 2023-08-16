@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:title="Geschäft">
+
+        <menu>
+
+            <item android:title="Tag">
+                <menu>
+                    <item
+                        android:id="@+id/nav_vorne_Tag"
+                        android:title="vorne" />
+                    <item
+                        android:id="@+id/nav_hinten_Tag"
+                        android:title="hinten" />
+                    <item
+                        android:id="@+id/nav_seite_links_Tag"
+                        android:title="Seite links" />
+                    <item
+                        android:id="@+id/nav_seite_rechts_Tag"
+                        android:title="Seite rechts" />
+                    <item
+                        android:id="@+id/nav_turen_Tag"
+                        android:title="Türen" />
+                </menu>
+            </item>
+
+            <item android:title="Nacht">
+                <menu>
+                    <item
+                        android:id="@+id/nav_vorne_Nacht"
+                        android:title="vorne" />
+                    <item
+                        android:id="@+id/nav_hinten_Nacht"
+                        android:title="hinten" />
+                    <item
+                        android:id="@+id/nav_seite_links_Nacht"
+                        android:title="Seite links" />
+                    <item
+                        android:id="@+id/nav_seite_rechts_Nacht"
+                        android:title="Seite rechts" />
+                    <item
+                        android:id="@+id/nav_turen_Nacht"
+                        android:title="Türen" />
+                </menu>
+            </item>
+
+        </menu>
+    </item>
+
+    <item android:title="Anschluss">
+        <menu>
+            <item
+                android:id="@+id/nav_Strom"
+                android:title="Strom" />
+            <item
+                android:id="@+id/nav_Wasser"
+                android:title="Wasser" />
+            <item
+                android:id="@+id/nav_Weitere"
+                android:title="Weitere" />
+        </menu>
+    </item>
+
+    <item android:title="Auslage">
+        <menu>
+            <item
+                android:id="@+id/nav_Sortiment"
+                android:title="Sortiment" />
+            <item
+                android:id="@+id/nav_Highlights"
+                android:title="Highlights" />
+        </menu>
+    </item>
+
+    <item android:title="Dokumente">
+        <menu>
+            <item
+                android:id="@+id/nav_Reisegewerbekarte"
+                android:title="Reisegewerbekarte" />
+            <item
+                android:id="@+id/nav_Prufbuch"
+                android:title="Prüfbuch" />
+            <item
+                android:id="@+id/nav_Ausführungsgenehmigung"
+                android:title="Ausführungsgenehmigung" />
+            <item
+                android:id="@+id/nav_Sonstige"
+                android:title="Sonstige" />
+        </menu>
+    </item>
+
+</menu>

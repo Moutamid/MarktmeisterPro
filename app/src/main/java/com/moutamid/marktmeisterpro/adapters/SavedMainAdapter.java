@@ -84,9 +84,9 @@ public class SavedMainAdapter extends RecyclerView.Adapter<SavedMainAdapter.Save
             if (charSequence.toString().isEmpty()){
                 filterList.addAll(stallAll);
             } else {
-                for (Stall listModel : stallAll){
+                for (Stall listModel : stallAll) {
                     if (
-                            listModel.getName().contains(charSequence.toString()) ||
+                            listModel.getName().toLowerCase().contains(charSequence.toString()) ||
                             listModel.getApplicationID().contains(charSequence.toString())
                     ) {
                         filterList.add(listModel);

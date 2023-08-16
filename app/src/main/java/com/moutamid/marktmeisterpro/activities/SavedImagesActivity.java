@@ -47,7 +47,7 @@ public class SavedImagesActivity extends AppCompatActivity {
         String im = list.size() > 1 ? " Images" : " Image";
         binding.totalSize.setText("You have saved "+ list.size() + im);
 
-        list.add(new StallModel("", NAME, "", "", "", "", "", true));
+        list.add(new StallModel("", NAME, "", "", "", "", "", "", true));
         adapter = new ImagesSubAdapter(this, list);
         binding.savedRC.setAdapter(adapter);
 
@@ -55,7 +55,7 @@ public class SavedImagesActivity extends AppCompatActivity {
 
     private void showPopupMenu(View v) {
         PopupMenu popupMenu = new PopupMenu(SavedImagesActivity.this, v);
-        popupMenu.getMenuInflater().inflate(R.menu.filter_menu, popupMenu.getMenu());
+        popupMenu.getMenuInflater().inflate(R.menu.sort_menu, popupMenu.getMenu());
 
         // Set a listener for menu item clicks
         popupMenu.setOnMenuItemClickListener(item -> {

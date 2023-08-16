@@ -1,10 +1,10 @@
 package com.moutamid.marktmeisterpro.models;
 
 public class StallModel {
-    String applicationID, stallName, item, beschreibung, nr, date, imageURL;
+    String applicationID, stallName, item, beschreibung, nr, date, imageURL, night;
     boolean add;
 
-    public StallModel(String applicationID, String stallName, String item, String beschreibung, String nr, String date, String imageURL, boolean add) {
+    public StallModel(String applicationID, String stallName, String item, String beschreibung, String nr, String date, String imageURL, String night, boolean add) {
         this.applicationID = applicationID;
         this.stallName = stallName;
         this.item = item;
@@ -13,6 +13,7 @@ public class StallModel {
         this.date = date;
         this.imageURL = imageURL;
         this.add = add;
+        this.night = night;
     }
 
     public String getApplicationID() {
@@ -77,5 +78,13 @@ public class StallModel {
 
     public void setAdd(boolean add) {
         this.add = add;
+    }
+
+    public String getNight() {
+        return night;
+    }
+
+    public void setNight(String night) {
+        this.night = night;
     }
 }

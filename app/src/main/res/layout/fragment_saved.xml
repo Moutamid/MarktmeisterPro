@@ -14,7 +14,7 @@
         android:layout_margin="12sp">
 
         <ImageView
-            android:id="@+id/filter"
+            android:id="@+id/sort"
             android:layout_width="32sp"
             android:layout_height="32sp"
             android:layout_centerVertical="true"
@@ -25,13 +25,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_toEndOf="@+id/filter"
+            android:layout_toEndOf="@+id/sort"
+            android:layout_toStartOf="@id/filter"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Ihre Aufnahmen"
             android:fontFamily="@font/firasans_bold"
             android:textColor="@color/dark"
             android:textSize="26sp"/>
+
+        <ImageView
+            android:id="@+id/filter"
+            android:layout_width="32sp"
+            android:layout_height="32sp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/round_filter_alt_24"
+            android:layout_alignParentEnd="true"/>
 
     </RelativeLayout>
 

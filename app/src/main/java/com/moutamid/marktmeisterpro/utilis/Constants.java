@@ -82,63 +82,6 @@ public class Constants {
         dialog.dismiss();
     }
 
-    public static void saveImage(Context context, Bitmap imageBitmap) {
-
-        Activity activity = (Activity) context;
-
-        File mShotDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "MShot");
-        mShotDir.mkdirs();
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String imageFileName = "IMG_" + timeStamp + ".jpg";
-        File imageFile = new File(mShotDir, imageFileName);
-
-        try {
-            FileOutputStream fos = new FileOutputStream(imageFile);
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.close();
-            Uri contentUri = FileProvider.getUriForFile(context, "com.moutamid.marktmeisterpro.fileprovider", imageFile);
-            String image = contentUri.toString();
-            String name = Stash.getString(Constants.NAME);
-            ArrayList<StallModel> list = Stash.getArrayList(name, StallModel.class);
-            list.add(new StallModel(Stash.getString(Constants.applicationID), Stash.getString(Constants.NAME), Stash.getString(Constants.SELECTION_CAT),
-                    Stash.getString(Constants.SELECTION_CAT_TYPE), "ongoing", Constants.getFormatedDate(new Date().getTime()), image, false));
-            Stash.put(name, list);
-            Stall stall = new Stall(name, Stash.getString(Constants.applicationID), list);
-            ArrayList<Stall> stallList = Stash.getArrayList(Constants.STALL_LIST, Stall.class);
-
-            if (stallList.size() > 0){
-                boolean notFound = false;
-                for (int i = 0; i < stallList.size(); i++) {
-                    Stall s = stallList.get(i);
-                    if (s.getName().equals(stall.getName())){
-                        stallList.get(i).setStall(list);
-                        notFound = false;
-                        break;
-                    } else {
-                        notFound = true;
-                    }
-                }
-
-                if (notFound){
-                    stallList.add(stall);
-                }
-
-            } else {
-                stallList.add(stall);
-            }
-
-            Stash.put(Constants.STALL_LIST, stallList);
-
-            Toast.makeText(context, "Image saved", Toast.LENGTH_SHORT).show();
-            context.startActivity(new Intent(context, MainActivity.class));
-            activity.finish();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(context, "Failed to save image.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     public static void checkApp(Activity activity) {
         String appName = "marktmeisterpro";
 
