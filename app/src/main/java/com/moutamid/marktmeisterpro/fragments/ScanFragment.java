@@ -56,14 +56,13 @@ public class ScanFragment extends Fragment {
             eventId = parts[0].split(": ")[1];
             ID = parts[1].split(": ")[1];
             name = parts[2].split(": ")[1];
-            EventModel eventModel = (EventModel) Stash.getObject(Constants.EventIdLIST, EventModel.class);
-            go = eventId.equals(eventModel.getID());
 
-            Log.d("CHECKIN123", "RES  " + res);
-            Log.d("CHECKIN123", "NAME  " + name);
-            Log.d("CHECKIN123", "ID  " + ID);
-            Log.d("CHECKIN123", "eventModel  " + eventModel.getID());
-            Log.d("CHECKIN123", "go  " + go);
+            EventModel eventModel = (EventModel) Stash.getObject(Constants.EventIdLIST, EventModel.class);
+            if (eventModel == null){
+                go = true;
+            } else {
+                go = eventId.equals(eventModel.getID());
+            }
 
             if (go) {
                 Stash.put(Constants.NAME, name);
