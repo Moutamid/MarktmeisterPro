@@ -52,33 +52,18 @@ public class ScanFragment extends Fragment {
                 res = res.substring(1);
             }
 
-            if (res.startsWith("ID")){
-                Pattern idPattern = Pattern.compile("ID: (\\d{2}-\\d{2}-\\d{5})");
-                Matcher idMatcher = idPattern.matcher(res);
-                if (idMatcher.find()) {
-                    ID = idMatcher.group(1);
-                }
-                Pattern namePattern = Pattern.compile("name: ([^;]+)");
-                Matcher nameMatcher = namePattern.matcher(res);
-                if (nameMatcher.find()) {
-                    name = nameMatcher.group(1);
-                }
-            } else if (res.startsWith("EventID")) {
-                eventId = extractValue(res, "EventID");
-                ID = extractValue(res, "Application-ID");
-                name = extractValue(res, "name");
-                EventModel eventModel = (EventModel) Stash.getObject(Constants.EventIdLIST, EventModel.class);
-                go = eventId.equals(eventModel.getID());
-            } else {
-                String[] parts = res.split("_");
-                if (parts.length >= 2) {
-                    name = parts[1];
-                    ID = parts[0];
-                }
-            }
+            String[] parts = res.split("; ");
+            eventId = parts[0].split(": ")[1];
+            ID = parts[1].split(": ")[1];
+            name = parts[2].split(": ")[1];
+            EventModel eventModel = (EventModel) Stash.getObject(Constants.EventIdLIST, EventModel.class);
+            go = eventId.equals(eventModel.getID());
+
             Log.d("CHECKIN123", "RES  " + res);
             Log.d("CHECKIN123", "NAME  " + name);
             Log.d("CHECKIN123", "ID  " + ID);
+            Log.d("CHECKIN123", "eventModel  " + eventModel.getID());
+            Log.d("CHECKIN123", "go  " + go);
 
             if (go) {
                 Stash.put(Constants.NAME, name);

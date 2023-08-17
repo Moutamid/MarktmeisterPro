@@ -47,9 +47,10 @@
         android:layout_margin="12sp">
 
         <ImageView
-            android:id="@+id/filter"
+            android:id="@+id/sort"
             android:layout_width="32sp"
             android:layout_height="32sp"
+            android:layout_centerInParent="true"
             android:src="@drawable/round_filter_list_24"
             android:layout_alignParentLeft="true"/>
 
@@ -57,7 +58,7 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/filter"
+            android:layout_toEndOf="@+id/sort"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Geschäftsname"
@@ -67,15 +68,33 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/totalSize"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="start|center"
-        android:text="You have saved 3 images"
-        android:textSize="18sp"
-        android:textColor="@color/dark"
-        android:layout_margin="12sp" />
+        android:layout_margin="12sp">
+
+        <TextView
+            android:id="@+id/totalSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start|center"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@id/filter"
+            android:text="You have saved 3 images"
+            android:textSize="18sp"
+            android:textColor="@color/dark" />
+
+        <ImageView
+            android:id="@+id/filter"
+            android:layout_width="32sp"
+            android:layout_height="32sp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:src="@drawable/round_filter_alt_24" />
+
+
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/savedRC"

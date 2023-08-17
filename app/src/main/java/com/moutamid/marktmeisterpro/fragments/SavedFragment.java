@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -30,6 +31,7 @@ public class SavedFragment extends Fragment {
     FragmentSavedBinding binding;
     ArrayList<Stall> stalls;
     SavedMainAdapter adapter;
+    boolean az = true, ro = true;
 
     public SavedFragment() {
         // Required empty public constructor
@@ -393,21 +395,55 @@ public class SavedFragment extends Fragment {
         PopupMenu popupMenu = new PopupMenu(requireContext(), v);
         popupMenu.getMenuInflater().inflate(R.menu.sort_menu, popupMenu.getMenu());
 
+        MenuItem atoz = popupMenu.getMenu().getItem(0);
+        MenuItem rtoo = popupMenu.getMenu().getItem(1);
+
+        if (!az) {
+            atoz.setTitle("Sort Z-A");
+        } else {
+            atoz.setTitle("Sort A-Z");
+        }
+
+        if (!ro) {
+            rtoo.setTitle("Old To Recent");
+        } else {
+            rtoo.setTitle("Recent To Old");
+        }
+
         // Set a listener for menu item clicks
         popupMenu.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
 
             if (itemId == R.id.filter_AZ) {
+
                 stalls.sort((obj1, obj2) -> obj1.getName().compareToIgnoreCase(obj2.getName()));
                 for (Stall s : stalls) {
                     s.getStall().sort((obj1, obj2) -> obj1.getItem().compareToIgnoreCase(obj2.getItem()));
+                    if (!az){
+                        Collections.reverse(s.getStall());
+                    }
                 }
+
+                if (!az){
+                    Collections.reverse(stalls);
+                }
+
+                if (az) {
+                    az = false;
+                    item.setTitle("Sort Z-A");
+                } else {
+                    az = true;
+                    item.setTitle("Sort A-Z");
+                }
+
                 adapter.notifyDataSetChanged();
                 return true;
             } else if (itemId == R.id.filter_RO) {
-                if (item.getTitle().toString().equals("Recent To Old")) {
+                if (ro) {
+                    ro = false;
                     item.setTitle("Old To Recent");
                 } else {
+                    ro = true;
                     item.setTitle("Recent To Old");
                 }
                 Collections.reverse(stalls);

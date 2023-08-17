@@ -31,6 +31,7 @@ import com.moutamid.marktmeisterpro.models.Stall;
 import com.moutamid.marktmeisterpro.models.StallModel;
 import com.moutamid.marktmeisterpro.utilis.Constants;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class ImagesSubAdapter extends RecyclerView.Adapter<ImagesSubAdapter.ImagesVH> {
@@ -93,11 +94,14 @@ public class ImagesSubAdapter extends RecyclerView.Adapter<ImagesSubAdapter.Imag
                             if (stall.get(i).getImageURL().equals(model.getImageURL())){
 
                                 for (int j = 0; j < allStalls.size(); j++) {
-                                    if (allStalls.get(j).getName().equals(model.getStallName())){
+                                    if (allStalls.get(j).getName().equals(model.getStallName())) {
                                         allStalls.get(j).getStall().remove(i);
                                     }
                                 }
-
+                                File fileToDelete = new File(stall.get(i).getImageURL());
+                                if (fileToDelete.exists()) {
+                                    fileToDelete.delete();
+                                }
                                 stall.remove(i);
                                 list.remove(i);
                                 notifyItemRemoved(i);
