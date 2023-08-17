@@ -58,7 +58,7 @@ public class ScanFragment extends Fragment {
             name = parts[2].split(": ")[1];
 
             EventModel eventModel = (EventModel) Stash.getObject(Constants.EventIdLIST, EventModel.class);
-            if (eventModel == null){
+            if (eventModel == null) {
                 go = true;
             } else {
                 go = eventId.equals(eventModel.getID());

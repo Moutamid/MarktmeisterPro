@@ -1,7 +1,10 @@
 package com.moutamid.marktmeisterpro.models;
 
 public class EventModel {
-    String ID, city;
+    String ID = "", city = "";
+
+    public EventModel() {
+    }
 
     public EventModel(String ID, String city) {
         this.ID = ID;
