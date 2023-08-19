@@ -237,7 +237,7 @@ public class CameraActivity extends AppCompatActivity {
 
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             Log.d("ROTATION3", "rotation " + rotation);
-            int rr = getOrientation(rotation) + getOrientation(rotation);
+            int rr = getOrientation(rotation);
             Log.d("ROTATION3", "rr " + rr);
             captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, rr);
 
@@ -277,10 +277,44 @@ public class CameraActivity extends AppCompatActivity {
     }*/
 
     private int getOrientation(int rotation) {
+        CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        int sensorOrientation = 0;
+
+        try {
+            CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraDevice.getId());
+            sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+        }
+
+        // Calculate the final image orientation
+        int imageOrientation = (sensorOrientation - degrees + 360) % 360;
+        return imageOrientation;
+    }
+
+/*
+    private int getOrientation(int rotation) {
         Log.d("ROTATION3", "OR  " + ORIENTATIONS.get(rotation));
         int sensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
         return (sensorOrientation + ORIENTATIONS.get(rotation) + 360) % 360;
     }
+*/
 
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     static {
