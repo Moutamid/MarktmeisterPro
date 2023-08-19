@@ -57,7 +57,6 @@ import java.util.Locale;
 
 public class SelectItemActivity extends AppCompatActivity {
     ActivitySelectItemBinding binding;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,83 +135,8 @@ public class SelectItemActivity extends AppCompatActivity {
         startCamera();
     }
 
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
-
     private void startCamera() {
-
         startActivity(new Intent(this, CameraActivity.class));
-
-//        dispatchTakePictureIntent();
-//        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-//            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//            if (intent.resolveActivity(getPackageManager()) != null) {
-//                intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, (byte) 100);
-//                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
-//            }
-//        } else {
-//            Toast.makeText(this, "No camera available.", Toast.LENGTH_SHORT).show();
-//        }
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-
-//            Bundle extras = data.getExtras();
-//            Bitmap imageBitmap = (Bitmap) extras.get("data");
-//
-//            // Save the image to a file
-//            String imagePath = saveImageToFile(imageBitmap);
-//
-//            // Move the image to the desired folder
-//            if (imagePath != null) {
-//                moveFileToFolder(imagePath);
-//            }
-
-            Bitmap capturedBitmap  = (Bitmap) data.getExtras().get("data");
-//            String imagePath = mCurrentPhotoPath;
-//            if (imagePath != null) {
-//                moveFileToFolder(imagePath);
-//            }
-            int width = 0;
-            int height = 0;
-            if (Stash.getString(Constants.Resolution, Constants.MEDIUM).equals(Constants.SMALL)) {
-                width = 240;
-                height = 240;
-            } else if (Stash.getString(Constants.Resolution, Constants.MEDIUM).equals(Constants.MEDIUM)) {
-                width = 640;
-                height = 480;
-            } else if (Stash.getString(Constants.Resolution, Constants.MEDIUM).equals(Constants.LARGE)) {
-                width = 1280;
-                height = 720;
-            }
-
-//            Bitmap resizedBitmap = resizeBitmap(capturedBitmap, width, height);
-
-//            Constants.saveImage(SelectItemActivity.this, capturedBitmap);
-
-            String fileName = "IMG_" + System.currentTimeMillis() + ".jpg";
-            File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "MShot");
-            if (!storageDir.exists()) {
-                storageDir.mkdirs();
-            }
-            File imageFile = new File(storageDir, fileName);
-            Log.d("PATH", imageFile.getAbsolutePath());
-            try (FileOutputStream outputStream = new FileOutputStream(imageFile)) {
-                capturedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                outputStream.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
 }

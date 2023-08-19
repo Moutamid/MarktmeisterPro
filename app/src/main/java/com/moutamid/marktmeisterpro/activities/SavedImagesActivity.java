@@ -36,12 +36,14 @@ public class SavedImagesActivity extends AppCompatActivity {
 
         binding.savedRC.setHasFixedSize(false);
         String NAME = Stash.getString(Constants.IMAGE);
+        String ID = Stash.getString(Constants.ID);
 
         Glide.with(this).load(R.drawable.markt_schwarz).into(binding.logo);
 
         binding.back.setOnClickListener(v -> onBackPressed());
 
         binding.name.setText(NAME);
+        binding.applicationID.setText("ID: " + ID);
 
         list = new ArrayList<>();
         list.addAll(Stash.getArrayList(NAME, StallModel.class));
@@ -53,8 +55,8 @@ public class SavedImagesActivity extends AppCompatActivity {
             showFilterMenu(v);
         });
 
-        String im = list.size() > 1 ? " Images" : " Image";
-        binding.totalSize.setText("You have saved " + list.size() + im);
+//        String im = list.size() > 1 ? " Images" : " Image";
+        binding.totalSize.setText("Sie haben " + list.size() + " Bild gespeichert");
 
         list.add(new StallModel("", NAME, "", "", "", "", "", "", true));
         adapter = new ImagesSubAdapter(this, list);
@@ -382,15 +384,15 @@ public class SavedImagesActivity extends AppCompatActivity {
         MenuItem rtoo = popupMenu.getMenu().getItem(1);
 
         if (!az) {
-            atoz.setTitle("Sort Z-A");
+            atoz.setTitle(getResources().getString(R.string.sort_z_a));
         } else {
-            atoz.setTitle("Sort A-Z");
+            atoz.setTitle(getResources().getString(R.string.sort_a_z));
         }
 
         if (!ro) {
-            rtoo.setTitle("Old To Recent");
+            rtoo.setTitle(getResources().getString(R.string.sort_old_new));
         } else {
-            rtoo.setTitle("Recent To Old");
+            rtoo.setTitle(getResources().getString(R.string.sort_new_old));
         }
 
         // Set a listener for menu item clicks
@@ -401,10 +403,10 @@ public class SavedImagesActivity extends AppCompatActivity {
 
                 if (az) {
                     az = false;
-                    item.setTitle("Sort Z-A");
+                    item.setTitle(getResources().getString(R.string.sort_z_a));
                 } else {
                     az = true;
-                    item.setTitle("Sort A-Z");
+                    item.setTitle(getResources().getString(R.string.sort_a_z));
                 }
 
                 List<StallModel> sublist = new ArrayList<>(list.subList(0, list.size() - 1));
@@ -421,10 +423,10 @@ public class SavedImagesActivity extends AppCompatActivity {
             } else if (itemId == R.id.filter_RO) {
                 if (ro) {
                     ro = false;
-                    item.setTitle("Old To Recent");
+                    item.setTitle(getResources().getString(R.string.sort_old_new));
                 } else {
                     ro = true;
-                    item.setTitle("Recent To Old");
+                    item.setTitle(getResources().getString(R.string.sort_new_old));
                 }
                 List<StallModel> sublist = new ArrayList<>(list.subList(0, list.size() - 1));
                 Collections.reverse(sublist);

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.fxn.stash.Stash;
+import com.moutamid.marktmeisterpro.MainActivity;
 import com.moutamid.marktmeisterpro.R;
 import com.moutamid.marktmeisterpro.activities.SelectItemActivity;
 import com.moutamid.marktmeisterpro.databinding.FragmentScanBinding;
@@ -44,13 +45,15 @@ public class ScanFragment extends Fragment {
         mCodeScanner = new CodeScanner(requireContext(), binding.scannerView);
         mCodeScanner.setDecodeCallback(result -> requireActivity().runOnUiThread(() -> {
             String res = result.getText();
-            String name = "";
-            String ID = "";
-            String eventId = "";
-            boolean go = true;
+            String name;
+            String ID;
+            String eventId;
+            boolean go, eventCheck = false;
             if (res.startsWith(" ")){
                 res = res.substring(1);
             }
+
+            MainActivity activity = (MainActivity) requireActivity();
 
             String[] parts = res.split("; ");
             eventId = parts[0].split(": ")[1];
@@ -59,25 +62,36 @@ public class ScanFragment extends Fragment {
 
             EventModel eventModel = (EventModel) Stash.getObject(Constants.EventIdLIST, EventModel.class);
             if (eventModel == null) {
-                go = true;
+                go = false;
+                eventCheck = true;
             } else {
+                eventCheck = false;
                 go = eventId.equals(eventModel.getID());
             }
 
-            if (go) {
-                Stash.put(Constants.NAME, name);
-                Stash.put(Constants.applicationID, ID);
-                Stash.put(Constants.SCAN_RESULT, res);
-                startActivity(new Intent(requireContext(), SelectItemActivity.class));
-                requireActivity().finish();
-            } else {
+            if (eventCheck) {
                 new AlertDialog.Builder(requireContext())
-                        .setMessage("Der QR-Code gehört zu einer anderen Veranstaltung")
-                        .setPositiveButton("Ok", ((dialog, which) -> {
-                            mCodeScanner.startPreview();
-                            dialog.dismiss();
-                        }))
-                        .show();
+                        .setTitle("Keine Event-ID gefunden")
+                        .setMessage("Bitte fügen Sie eine Event-ID in den Einstellungen hinzu")
+                        .setPositiveButton("OK", ((dialog, which) -> {
+                            activity.bottomNavigationView.setSelectedItemId(R.id.nav_export);
+                        })).show();
+            } else {
+                if (go) {
+                    Stash.put(Constants.NAME, name);
+                    Stash.put(Constants.applicationID, ID);
+                    Stash.put(Constants.SCAN_RESULT, res);
+                    startActivity(new Intent(requireContext(), SelectItemActivity.class));
+                    requireActivity().finish();
+                } else {
+                    new AlertDialog.Builder(requireContext())
+                            .setMessage("Der QR-Code gehört zu einer anderen Veranstaltung")
+                            .setPositiveButton("Ok", ((dialog, which) -> {
+                                mCodeScanner.startPreview();
+                                dialog.dismiss();
+                            }))
+                            .show();
+                }
             }
         }));
 

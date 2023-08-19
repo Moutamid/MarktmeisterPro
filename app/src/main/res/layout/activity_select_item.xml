@@ -387,7 +387,7 @@
                             android:layout_height="wrap_content"
                             android:backgroundTint="@color/bottomNav"
                             android:onClick="dokumenteClick"
-                            android:text="Sonstinge"
+                            android:text="Sonstige"
                             android:textColor="@color/dark"
                             android:textSize="18sp" />
 

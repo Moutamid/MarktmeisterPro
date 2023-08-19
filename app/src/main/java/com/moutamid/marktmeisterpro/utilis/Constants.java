@@ -43,6 +43,7 @@ public class Constants {
     public static final String NAME = "NAME";
     public static final String SCAN_RESULT = "SCAN_RESULT";
     public static final String applicationID = "applicationID";
+    public static final String ID = "ID";
     public static final String USER = "USER";
     public static final String Resolution = "Resolution";
     public static final String SMALL = "SMALL";

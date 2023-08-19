@@ -43,12 +43,18 @@ public class SettingFragment extends Fragment {
         binding = FragmentSettingBinding.inflate(getLayoutInflater(), container, false);
 
         UserModel userModel = (UserModel) Stash.getObject(Constants.USER, UserModel.class);
+        EventModel event = (EventModel) Stash.getObject(Constants.EventIdLIST, EventModel.class);
 
         if (userModel != null) {
             Glide.with(requireContext()).load(userModel.getProfileLink()).placeholder(R.drawable.profile_icon).into(binding.profile);
             binding.name.getEditText().setText(userModel.getName());
             binding.surname.getEditText().setText(userModel.getSurName());
             binding.position.getEditText().setText(userModel.getPosition());
+        }
+
+        if (event != null){
+            binding.eventID.getEditText().setText(event.getID());
+            binding.ort.getEditText().setText(event.getCity());
         }
 
         binding.event.setOnClickListener(v -> {
@@ -113,11 +119,9 @@ public class SettingFragment extends Fragment {
             Stash.put(Constants.USER, user);
             Toast.makeText(requireContext(), "Profil gespeichert", Toast.LENGTH_SHORT).show();
         });
-        binding.upload.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(Intent.createChooser(intent, ""), REQUEST_IMAGE_PICK);
 
-        });
+        binding.profile.setOnClickListener(v -> addImage());
+        binding.upload.setOnClickListener(v -> addImage());
 
         binding.add.setOnClickListener(v -> {
             String ID = binding.eventID.getEditText().getText().toString();
@@ -127,11 +131,16 @@ public class SettingFragment extends Fragment {
             } else {
                 EventModel eventModel = new EventModel(ID, ort);
                 Stash.put(Constants.EventIdLIST, eventModel);
-                Toast.makeText(requireContext(), "ID Added", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Event ID gespeichert", Toast.LENGTH_SHORT).show();
             }
         });
 
         return binding.getRoot();
+    }
+
+    private void addImage() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(Intent.createChooser(intent, ""), REQUEST_IMAGE_PICK);
     }
 
     @Override

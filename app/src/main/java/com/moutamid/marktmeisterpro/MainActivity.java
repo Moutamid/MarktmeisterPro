@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity  implements BottomNavigation
         bottomNavigationView.setItemActiveIndicatorWidth(100);
         bottomNavigationView.setItemActiveIndicatorHeight(100);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        bottomNavigationView.setSelectedItemId(R.id.nav_scan);
+        bottomNavigationView.setSelectedItemId(R.id.nav_export);
     }
 
     @Override

@@ -92,7 +92,8 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent" />
+                                android:layout_height="match_parent"
+                                android:inputType="textPersonName"/>
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -106,7 +107,8 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent" />
+                                android:layout_height="match_parent"
+                                android:inputType="textPersonName" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -178,7 +180,8 @@
 
                            <com.google.android.material.textfield.TextInputEditText
                                android:layout_width="match_parent"
-                               android:layout_height="match_parent" />
+                               android:layout_height="match_parent"
+                               android:inputType="textPersonName" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -192,7 +195,8 @@
 
                            <com.google.android.material.textfield.TextInputEditText
                                android:layout_width="match_parent"
-                               android:layout_height="match_parent" />
+                               android:layout_height="match_parent"
+                               android:inputType="textPersonName" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -206,7 +210,8 @@
 
                            <com.google.android.material.textfield.TextInputEditText
                                android:layout_width="match_parent"
-                               android:layout_height="match_parent" />
+                               android:layout_height="match_parent"
+                               android:inputType="textPersonName" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 

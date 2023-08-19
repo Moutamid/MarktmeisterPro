@@ -19,7 +19,10 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         Glide.with(this).load(R.drawable.markt_schwarz).into(binding.logo);
 
-        new Handler().postDelayed(() -> startActivity(new Intent(SplashScreenActivity.this, MainActivity.class)),2000);
+        new Handler().postDelayed(() -> {
+            startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+            finish();
+        },2000);
 
     }
 }

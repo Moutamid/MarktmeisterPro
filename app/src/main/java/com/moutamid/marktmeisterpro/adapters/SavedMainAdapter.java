@@ -51,6 +51,7 @@ public class SavedMainAdapter extends RecyclerView.Adapter<SavedMainAdapter.Save
 
         holder.itemView.setOnClickListener(v -> {
             Stash.put(Constants.IMAGE, stall.getName());
+            Stash.put(Constants.ID, stall.getApplicationID());
             context.startActivity(new Intent(context, SavedImagesActivity.class));
         });
 

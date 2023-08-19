@@ -399,15 +399,15 @@ public class SavedFragment extends Fragment {
         MenuItem rtoo = popupMenu.getMenu().getItem(1);
 
         if (!az) {
-            atoz.setTitle("Sort Z-A");
+            atoz.setTitle(getResources().getString(R.string.sort_z_a));
         } else {
-            atoz.setTitle("Sort A-Z");
+            atoz.setTitle(getResources().getString(R.string.sort_a_z));
         }
 
         if (!ro) {
-            rtoo.setTitle("Old To Recent");
+            rtoo.setTitle(getResources().getString(R.string.sort_old_new));
         } else {
-            rtoo.setTitle("Recent To Old");
+            rtoo.setTitle(getResources().getString(R.string.sort_new_old));
         }
 
         // Set a listener for menu item clicks
@@ -430,10 +430,10 @@ public class SavedFragment extends Fragment {
 
                 if (az) {
                     az = false;
-                    item.setTitle("Sort Z-A");
+                    item.setTitle(getResources().getString(R.string.sort_z_a));
                 } else {
                     az = true;
-                    item.setTitle("Sort A-Z");
+                    item.setTitle(getResources().getString(R.string.sort_a_z));
                 }
 
                 adapter.notifyDataSetChanged();
@@ -441,10 +441,10 @@ public class SavedFragment extends Fragment {
             } else if (itemId == R.id.filter_RO) {
                 if (ro) {
                     ro = false;
-                    item.setTitle("Old To Recent");
+                    item.setTitle(getResources().getString(R.string.sort_old_new));
                 } else {
                     ro = true;
-                    item.setTitle("Recent To Old");
+                    item.setTitle(getResources().getString(R.string.sort_new_old));
                 }
                 Collections.reverse(stalls);
                 for (Stall s : stalls) {

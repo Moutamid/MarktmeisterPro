@@ -63,7 +63,7 @@ public class PictureResultActivity extends AppCompatActivity {
                 boolean notFound = false;
                 for (int i = 0; i < stallList.size(); i++) {
                     Stall s = stallList.get(i);
-                    if (s.getName().equals(stall.getName())) {
+                    if (s.getApplicationID().equals(stall.getApplicationID())) {
                         stallList.get(i).setStall(list);
                         notFound = false;
                         break;
@@ -82,7 +82,7 @@ public class PictureResultActivity extends AppCompatActivity {
 
             Stash.put(Constants.STALL_LIST, stallList);
 
-            Toast.makeText(PictureResultActivity.this, "Image saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PictureResultActivity.this, "Bild gespeichert", Toast.LENGTH_SHORT).show();
             Stash.put(Constants.IMAGE, stall.getName());
             startActivity(new Intent(PictureResultActivity.this, SavedImagesActivity.class));
             finish();
