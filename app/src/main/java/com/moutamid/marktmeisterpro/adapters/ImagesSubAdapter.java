@@ -74,6 +74,7 @@ public class ImagesSubAdapter extends RecyclerView.Adapter<ImagesSubAdapter.Imag
 
             holder.mainCard.setOnClickListener(v -> {
                 Stash.put(Constants.NAME, model.getStallName());
+                Stash.put(Constants.applicationID, model.getApplicationID());
                 context.startActivity(new Intent(context, SelectItemActivity.class));
             });
 
@@ -84,7 +85,7 @@ public class ImagesSubAdapter extends RecyclerView.Adapter<ImagesSubAdapter.Imag
         }
 
         holder.delete.setOnClickListener(v -> {
-            ArrayList<StallModel> stall = Stash.getArrayList(model.getStallName(), StallModel.class);
+            ArrayList<StallModel> stall = Stash.getArrayList(model.getApplicationID(), StallModel.class);
             ArrayList<Stall> allStalls = Stash.getArrayList(Constants.STALL_LIST, Stall.class);
             new AlertDialog.Builder(context)
                     .setMessage("Möchten Sie dieses Foto wirklich löschen?")
@@ -94,8 +95,11 @@ public class ImagesSubAdapter extends RecyclerView.Adapter<ImagesSubAdapter.Imag
                             if (stall.get(i).getImageURL().equals(model.getImageURL())){
 
                                 for (int j = 0; j < allStalls.size(); j++) {
-                                    if (allStalls.get(j).getName().equals(model.getStallName())) {
+                                    if (allStalls.get(j).getApplicationID().equals(model.getApplicationID())) {
                                         allStalls.get(j).getStall().remove(i);
+                                    }
+                                    if (allStalls.get(j).getStall().size() == 0){
+                                        allStalls.remove(j);
                                     }
                                 }
                                 File fileToDelete = new File(stall.get(i).getImageURL());
@@ -108,7 +112,7 @@ public class ImagesSubAdapter extends RecyclerView.Adapter<ImagesSubAdapter.Imag
                                 break;
                             }
                         }
-                        Stash.put(model.getStallName(), stall);
+                        Stash.put(model.getApplicationID(), stall);
                         Stash.put(Constants.STALL_LIST, allStalls);
                     }))
                     .show();

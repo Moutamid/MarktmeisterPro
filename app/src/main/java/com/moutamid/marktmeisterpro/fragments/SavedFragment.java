@@ -8,10 +8,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.fxn.stash.Stash;
 import com.moutamid.marktmeisterpro.R;
@@ -44,12 +46,10 @@ public class SavedFragment extends Fragment {
         binding.stallListRC.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.stallListRC.setHasFixedSize(false);
 
-        binding.sort.setOnClickListener(v -> {
-            showPopupMenu(v);
-        });
-        binding.filter.setOnClickListener(v -> {
-            showFilterMenu(v);
-        });
+        binding.sort.setOnClickListener(this::showPopupMenu);
+        binding.filter.setOnClickListener(this::showFilterMenu);
+
+        binding.search.getEditText().setOnEditorActionListener((v, actionId, event) -> false);
 
         binding.search.getEditText().addTextChangedListener(new TextWatcher() {
             @Override

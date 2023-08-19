@@ -9,8 +9,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -24,6 +22,7 @@ import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.media.Image;
 import android.media.ImageReader;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -31,17 +30,12 @@ import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.fxn.stash.Stash;
-import com.moutamid.marktmeisterpro.MainActivity;
 import com.moutamid.marktmeisterpro.R;
 import com.moutamid.marktmeisterpro.databinding.ActivityCameraBinding;
-import com.moutamid.marktmeisterpro.models.Stall;
-import com.moutamid.marktmeisterpro.models.StallModel;
 import com.moutamid.marktmeisterpro.utilis.Constants;
 
 import java.io.File;
@@ -50,16 +44,12 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Locale;
 
 public class CameraActivity extends AppCompatActivity {
     ActivityCameraBinding binding;
-    TextureView previewTextureView;
     int width, height;
     private CameraDevice cameraDevice;
     private CameraCaptureSession cameraCaptureSession;
@@ -78,8 +68,6 @@ public class CameraActivity extends AppCompatActivity {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.black));
-
-        previewTextureView = binding.textureView;
 
         binding.back.setOnClickListener(v -> onBackPressed());
 
@@ -174,14 +162,14 @@ public class CameraActivity extends AppCompatActivity {
         for (File file : matchingFiles) {
             String fileName = file.getName();
             int endIndex = fileName.lastIndexOf('_');
-            int number = Integer.parseInt(fileName.substring(endIndex + 1, fileName.lastIndexOf('.')));
+            int number = Integer.parseInt(fileName.substring(endIndex+1, fileName.lastIndexOf('.')));
             if (number > highestNumber) {
                 highestNumber = number;
             }
         }
 
         int nextNumber = highestNumber + 1;
-        String newFileName = name + nextNumber + "_" + Constants.getFormatedDate(new Date().getTime()) + ".jpg";
+        String newFileName = name + Constants.getFormatedDate(new Date().getTime()) + "_" + nextNumber + ".jpg";
         Log.d("NAMEEEE", name);
         Log.d("NAMEEEE", newFileName);
 //        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
@@ -206,10 +194,43 @@ public class CameraActivity extends AppCompatActivity {
 
     private void createCameraPreview() {
         try {
-            SurfaceTexture texture = previewTextureView.getSurfaceTexture(); // Replace with your preview view
-//            assert texture != null;
-            texture.setDefaultBufferSize(width, height); // Set the dimensions of the preview
+            SurfaceTexture texture;
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                texture = binding.textureView.getSurfaceTexture();
+                texture.setDefaultBufferSize(width, height);
+                camera(texture);
+            } else {
+                binding.textureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+                    @Override
+                    public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
+                        surface.setDefaultBufferSize(CameraActivity.this.width, CameraActivity.this.height);
+                        camera(surface);
+                    }
 
+                    @Override
+                    public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surface, int width, int height) {
+
+                    }
+
+                    @Override
+                    public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surface) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surface) {
+
+                    }
+                });
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void camera(SurfaceTexture texture) {
+        try {
             Surface surface = new Surface(texture);
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureRequestBuilder.addTarget(surface);
@@ -229,7 +250,7 @@ public class CameraActivity extends AppCompatActivity {
                             }
 
                             cameraCaptureSession = session;
-                           // configureAutoFocus();
+                            // configureAutoFocus();
                             try {
                                 captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
                                 session.setRepeatingRequest(captureRequestBuilder.build(), null, null);
@@ -248,13 +269,12 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
-    private void configureTextureViewSize(int width, int height) {
-
-        ViewGroup.LayoutParams params = previewTextureView.getLayoutParams();
+/*    private void configureTextureViewSize(int width, int height) {
+        ViewGroup.LayoutParams params = binding.textureView.getLayoutParams();
         params.width = width;
         params.height = height;
-        previewTextureView.setLayoutParams(params);
-    }
+        binding.textureView.setLayoutParams(params);
+    }*/
 
     private int getOrientation(int rotation) {
         Log.d("ROTATION3", "OR  " + ORIENTATIONS.get(rotation));
@@ -269,7 +289,6 @@ public class CameraActivity extends AppCompatActivity {
         ORIENTATIONS.append(Surface.ROTATION_180, 270);
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
-
 
     private void captureImage() {
         try {
@@ -310,30 +329,6 @@ public class CameraActivity extends AppCompatActivity {
                 }
             }, null);
 
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void configureAutoFocus() {
-        if (cameraDevice == null) {
-            return;
-        }
-
-        try {
-            CaptureRequest.Builder captureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
-
-            // Set the focus mode to auto or continuous focus
-            captureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO);
-
-            // Trigger autofocus
-            captureBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START);
-
-            // Build the capture request
-            CaptureRequest previewRequest = captureBuilder.build();
-
-            // Implement CaptureCallback for autofocus result
-            cameraCaptureSession.setRepeatingRequest(previewRequest, captureCallback, backgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }

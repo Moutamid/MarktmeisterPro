@@ -13,7 +13,7 @@
         android:padding="12sp"
         android:gravity="center"
         android:fontFamily="@font/firasans_bold"
-        android:text="Scannen Sie den QR-Code, um ein Foto zu machen."
+        android:text="Scannen Sie den QR-Code,\num ein Foto zu machen."
         android:textSize="18sp"/>
 
     <FrameLayout

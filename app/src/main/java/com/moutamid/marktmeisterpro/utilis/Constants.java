@@ -45,6 +45,7 @@ public class Constants {
     public static final String applicationID = "applicationID";
     public static final String ID = "ID";
     public static final String USER = "USER";
+    public static final String From_Splash = "From_Splash";
     public static final String Resolution = "Resolution";
     public static final String SMALL = "SMALL";
     public static final String MEDIUM = "MEDIUM";

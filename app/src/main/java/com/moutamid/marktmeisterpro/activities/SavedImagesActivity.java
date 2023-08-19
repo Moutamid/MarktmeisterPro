@@ -46,7 +46,7 @@ public class SavedImagesActivity extends AppCompatActivity {
         binding.applicationID.setText("ID: " + ID);
 
         list = new ArrayList<>();
-        list.addAll(Stash.getArrayList(NAME, StallModel.class));
+        list.addAll(Stash.getArrayList(ID, StallModel.class));
 
         binding.sort.setOnClickListener(v -> {
             showPopupMenu(v);
@@ -58,7 +58,7 @@ public class SavedImagesActivity extends AppCompatActivity {
 //        String im = list.size() > 1 ? " Images" : " Image";
         binding.totalSize.setText("Sie haben " + list.size() + " Bild gespeichert");
 
-        list.add(new StallModel("", NAME, "", "", "", "", "", "", true));
+        list.add(new StallModel(ID, NAME, "", "", "", "", "", "", true));
         adapter = new ImagesSubAdapter(this, list);
         binding.savedRC.setAdapter(adapter);
 

@@ -34,7 +34,14 @@ public class MainActivity extends AppCompatActivity  implements BottomNavigation
         bottomNavigationView.setItemActiveIndicatorWidth(100);
         bottomNavigationView.setItemActiveIndicatorHeight(100);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        bottomNavigationView.setSelectedItemId(R.id.nav_export);
+
+        if (Stash.getBoolean(Constants.From_Splash)){
+            bottomNavigationView.setSelectedItemId(R.id.nav_export);
+        } else {
+            bottomNavigationView.setSelectedItemId(R.id.nav_scan);
+        }
+
+
     }
 
     @Override

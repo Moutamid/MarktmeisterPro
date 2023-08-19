@@ -54,11 +54,9 @@ public class ScanFragment extends Fragment {
             }
 
             MainActivity activity = (MainActivity) requireActivity();
-
+            Log.d("RESULT", res);
             String[] parts = res.split("; ");
             eventId = parts[0].split(": ")[1];
-            ID = parts[1].split(": ")[1];
-            name = parts[2].split(": ")[1];
 
             EventModel eventModel = (EventModel) Stash.getObject(Constants.EventIdLIST, EventModel.class);
             if (eventModel == null) {
@@ -78,6 +76,8 @@ public class ScanFragment extends Fragment {
                         })).show();
             } else {
                 if (go) {
+                    ID = parts[1].split(": ")[1];
+                    name = parts[2].split(": ")[1];
                     Stash.put(Constants.NAME, name);
                     Stash.put(Constants.applicationID, ID);
                     Stash.put(Constants.SCAN_RESULT, res);

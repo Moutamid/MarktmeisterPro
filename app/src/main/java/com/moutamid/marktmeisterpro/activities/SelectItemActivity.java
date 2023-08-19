@@ -64,7 +64,10 @@ public class SelectItemActivity extends AppCompatActivity {
         binding = ActivitySelectItemBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.back.setOnClickListener(v -> onBackPressed());
+        binding.back.setOnClickListener(v -> {
+            Stash.put(Constants.From_Splash, false);
+            onBackPressed();
+        });
 
         String name = Stash.getString(Constants.NAME);
         binding.name.setText(name);

@@ -46,7 +46,8 @@ public class PictureResultActivity extends AppCompatActivity {
 
         binding.save.setOnClickListener(v -> {
             String name = Stash.getString(Constants.NAME);
-            ArrayList<StallModel> list = Stash.getArrayList(name, StallModel.class);
+            String ID = Stash.getString(Constants.applicationID);
+            ArrayList<StallModel> list = Stash.getArrayList(ID, StallModel.class);
             String tag = Stash.getBoolean(Constants.DAY_OR_NIGHT, false) ? "Nacht" : "Tag";
             if (Stash.getString(Constants.SELECTION_CAT).equals("Geschäft")) {
                 list.add(new StallModel(Stash.getString(Constants.applicationID), Stash.getString(Constants.NAME), Stash.getString(Constants.SELECTION_CAT),
@@ -55,7 +56,7 @@ public class PictureResultActivity extends AppCompatActivity {
                 list.add(new StallModel(Stash.getString(Constants.applicationID), Stash.getString(Constants.NAME), Stash.getString(Constants.SELECTION_CAT),
                         Stash.getString(Constants.SELECTION_CAT_TYPE), "ongoing", Constants.getFormatedDate(new Date().getTime()), path, "", false));
             }
-            Stash.put(name, list);
+            Stash.put(ID, list);
             Stall stall = new Stall(name, Stash.getString(Constants.applicationID), list);
             ArrayList<Stall> stallList = Stash.getArrayList(Constants.STALL_LIST, Stall.class);
 
@@ -84,6 +85,7 @@ public class PictureResultActivity extends AppCompatActivity {
 
             Toast.makeText(PictureResultActivity.this, "Bild gespeichert", Toast.LENGTH_SHORT).show();
             Stash.put(Constants.IMAGE, stall.getName());
+            Stash.put(Constants.ID, stall.getApplicationID());
             startActivity(new Intent(PictureResultActivity.this, SavedImagesActivity.class));
             finish();
 
