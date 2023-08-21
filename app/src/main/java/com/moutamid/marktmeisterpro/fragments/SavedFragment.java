@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -17,8 +18,10 @@ import android.widget.TextView;
 
 import com.fxn.stash.Stash;
 import com.moutamid.marktmeisterpro.R;
+import com.moutamid.marktmeisterpro.adapters.ImagesSubAdapter;
 import com.moutamid.marktmeisterpro.adapters.SavedMainAdapter;
 import com.moutamid.marktmeisterpro.databinding.FragmentSavedBinding;
+import com.moutamid.marktmeisterpro.interfaces.SavedClickListener;
 import com.moutamid.marktmeisterpro.models.Stall;
 import com.moutamid.marktmeisterpro.models.StallModel;
 import com.moutamid.marktmeisterpro.utilis.Constants;
@@ -31,7 +34,7 @@ import java.util.stream.Collectors;
 
 public class SavedFragment extends Fragment {
     FragmentSavedBinding binding;
-    ArrayList<Stall> stalls;
+    ArrayList<Stall> allStalls, reset;
     SavedMainAdapter adapter;
     boolean az = true, ro = true;
 
@@ -48,6 +51,8 @@ public class SavedFragment extends Fragment {
 
         binding.sort.setOnClickListener(this::showPopupMenu);
         binding.filter.setOnClickListener(this::showFilterMenu);
+
+        Stash.put(Constants.isBACK, false);
 
         binding.search.getEditText().setOnEditorActionListener((v, actionId, event) -> false);
 
@@ -74,9 +79,10 @@ public class SavedFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        stalls = Stash.getArrayList(Constants.STALL_LIST, Stall.class);
-        Collections.reverse(stalls);
-        adapter = new SavedMainAdapter(requireContext(), stalls);
+        allStalls = Stash.getArrayList(Constants.STALL_LIST, Stall.class);
+        reset = Stash.getArrayList(Constants.STALL_LIST, Stall.class);
+        Collections.reverse(allStalls);
+        adapter = new SavedMainAdapter(requireContext(), allStalls, savedClickListener);
         binding.stallListRC.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
@@ -88,6 +94,7 @@ public class SavedFragment extends Fragment {
         // Set a listener for menu item clicks
         popupMenu.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
+            ArrayList<Stall> stalls =  Stash.getArrayList(Constants.STALL_LIST, Stall.class);
 
             // Tag  Geschäft
             if (itemId == R.id.nav_vorne_Tag) {
@@ -101,7 +108,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -116,7 +123,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -131,7 +138,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -146,7 +153,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -161,7 +168,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -178,7 +185,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -193,7 +200,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -208,7 +215,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -223,7 +230,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -238,7 +245,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -255,7 +262,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -270,7 +277,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -285,7 +292,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -302,7 +309,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -317,7 +324,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -334,7 +341,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -349,7 +356,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -364,7 +371,7 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -379,10 +386,14 @@ public class SavedFragment extends Fragment {
                         stalls.get(i).setStall(finalList);
                     }
                 }
-                adapter = new SavedMainAdapter(requireContext(), stalls);
+                adapter = new SavedMainAdapter(requireContext(), stalls, savedClickListener);
                 binding.stallListRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
+            } else if (itemId == R.id.reset) {
+                adapter = new SavedMainAdapter(requireContext(), reset, savedClickListener);
+                binding.stallListRC.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
 
             return false;
@@ -416,8 +427,8 @@ public class SavedFragment extends Fragment {
 
             if (itemId == R.id.filter_AZ) {
 
-                stalls.sort((obj1, obj2) -> obj1.getName().compareToIgnoreCase(obj2.getName()));
-                for (Stall s : stalls) {
+                allStalls.sort((obj1, obj2) -> obj1.getName().compareToIgnoreCase(obj2.getName()));
+                for (Stall s : allStalls) {
                     s.getStall().sort((obj1, obj2) -> obj1.getItem().compareToIgnoreCase(obj2.getItem()));
                     if (!az){
                         Collections.reverse(s.getStall());
@@ -425,7 +436,7 @@ public class SavedFragment extends Fragment {
                 }
 
                 if (!az){
-                    Collections.reverse(stalls);
+                    Collections.reverse(allStalls);
                 }
 
                 if (az) {
@@ -446,8 +457,8 @@ public class SavedFragment extends Fragment {
                     ro = true;
                     item.setTitle(getResources().getString(R.string.sort_new_old));
                 }
-                Collections.reverse(stalls);
-                for (Stall s : stalls) {
+                Collections.reverse(allStalls);
+                for (Stall s : allStalls) {
                     Collections.reverse(s.getStall());
                 }
                 adapter.notifyDataSetChanged();
@@ -460,5 +471,13 @@ public class SavedFragment extends Fragment {
         popupMenu.show();
     }
 
+    SavedClickListener savedClickListener = new SavedClickListener() {
+        @Override
+        public void onClick(Stall stall) {
+            Stash.put(Constants.IMAGE, stall.getName());
+            Stash.put(Constants.ID, stall.getApplicationID());
+            requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout , new SavedImagesActivity()).commit();
+        }
+    };
 
 }
