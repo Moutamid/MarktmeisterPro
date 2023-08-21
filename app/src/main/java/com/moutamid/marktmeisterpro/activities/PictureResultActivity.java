@@ -3,29 +3,19 @@ package com.moutamid.marktmeisterpro.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.fxn.stash.Stash;
-import com.moutamid.marktmeisterpro.MainActivity;
-import com.moutamid.marktmeisterpro.R;
 import com.moutamid.marktmeisterpro.databinding.ActivityPictureResultBinding;
+import com.moutamid.marktmeisterpro.fragments.SavedImagesActivity;
 import com.moutamid.marktmeisterpro.models.Stall;
 import com.moutamid.marktmeisterpro.models.StallModel;
 import com.moutamid.marktmeisterpro.utilis.Constants;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -86,12 +76,14 @@ public class PictureResultActivity extends AppCompatActivity {
             Toast.makeText(PictureResultActivity.this, "Bild gespeichert", Toast.LENGTH_SHORT).show();
             Stash.put(Constants.IMAGE, stall.getName());
             Stash.put(Constants.ID, stall.getApplicationID());
-            startActivity(new Intent(PictureResultActivity.this, SavedImagesActivity.class));
+            Stash.clear("img");
+            Stash.put(Constants.isPICTURE, true);
             finish();
 
         });
 
         binding.retake.setOnClickListener(v -> {
+            Stash.clear("img");
             onBackPressed();
         });
 

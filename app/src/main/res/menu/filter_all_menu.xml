@@ -91,4 +91,7 @@
         </menu>
     </item>
 
+    <item android:id="@+id/reset"
+        android:title="Filter zurücksetzen" />
+
 </menu>

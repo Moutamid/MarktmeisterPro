@@ -11,11 +11,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        tools:text="Geschaft"
-        android:padding="12sp"
+        android:paddingStart="12sp"
+        android:paddingTop="12sp"
+        android:paddingEnd="12sp"
+        android:paddingBottom="6sp"
         android:textColor="@color/dark"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:text="Geschaft" />
+
+    <TextView
+        android:id="@+id/applicationID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:text="Geschaft"
+        android:paddingStart="12sp"
+        android:paddingBottom="12sp"
+        android:paddingEnd="12sp"
+        android:textColor="@color/dark"
+        android:textSize="16sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/stallListRC"

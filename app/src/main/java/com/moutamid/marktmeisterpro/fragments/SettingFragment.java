@@ -45,6 +45,8 @@ public class SettingFragment extends Fragment {
         UserModel userModel = (UserModel) Stash.getObject(Constants.USER, UserModel.class);
         EventModel event = (EventModel) Stash.getObject(Constants.EventIdLIST, EventModel.class);
 
+        Stash.put(Constants.isBACK, false);
+
         if (userModel != null) {
             Glide.with(requireContext()).load(userModel.getProfileLink()).placeholder(R.drawable.profile_icon).into(binding.profile);
             binding.name.getEditText().setText(userModel.getName());

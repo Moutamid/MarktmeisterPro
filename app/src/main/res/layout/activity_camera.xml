@@ -55,7 +55,7 @@
         app:cardBackgroundColor="@color/background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="50sp"
+        app:cardCornerRadius="26sp"
         android:layout_centerInParent="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="30sp"
@@ -77,7 +77,7 @@
                 android:layout_height="match_parent"
                 android:text="Foto aufnehmen"
                 android:gravity="center"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:layout_marginEnd="12sp"
                 android:textColor="@color/black"
                 android:textStyle="bold" />

@@ -11,14 +11,16 @@ import com.bumptech.glide.Glide;
 import com.fxn.stash.Stash;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.moutamid.marktmeisterpro.databinding.ActivityMainBinding;
+import com.moutamid.marktmeisterpro.fragments.SavedImagesActivity;
 import com.moutamid.marktmeisterpro.fragments.SettingFragment;
 import com.moutamid.marktmeisterpro.fragments.SavedFragment;
 import com.moutamid.marktmeisterpro.fragments.ScanFragment;
 import com.moutamid.marktmeisterpro.utilis.Constants;
 
-public class MainActivity extends AppCompatActivity  implements BottomNavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     ActivityMainBinding binding;
     public BottomNavigationView bottomNavigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity  implements BottomNavigation
         bottomNavigationView.setItemActiveIndicatorHeight(100);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
-        if (Stash.getBoolean(Constants.From_Splash)){
+        if (Stash.getBoolean(Constants.From_Splash)) {
             bottomNavigationView.setSelectedItemId(R.id.nav_export);
         } else {
             bottomNavigationView.setSelectedItemId(R.id.nav_scan);
@@ -45,19 +47,37 @@ public class MainActivity extends AppCompatActivity  implements BottomNavigation
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (Stash.getBoolean(Constants.isPICTURE)) {
+            Stash.clear(Constants.isPICTURE);
+            bottomNavigationView.setSelectedItemId(R.id.nav_saved);
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new SavedImagesActivity()).commit();
+        }
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        if (item.getItemId() == R.id.nav_scan ){
-            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout , new ScanFragment()).commit();
+        if (item.getItemId() == R.id.nav_scan) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new ScanFragment()).commit();
             return true;
-        } else  if (item.getItemId() == R.id.nav_saved ){
-            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout , new SavedFragment()).commit();
+        } else if (item.getItemId() == R.id.nav_saved) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new SavedFragment()).commit();
             return true;
-        } else  if (item.getItemId() == R.id.nav_export ){
-            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout , new SettingFragment()).commit();
+        } else if (item.getItemId() == R.id.nav_export) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new SettingFragment()).commit();
             return true;
         }
 
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (Stash.getBoolean(Constants.isBACK)) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new SavedFragment()).commit();
+        } else
+            super.onBackPressed();
     }
 }

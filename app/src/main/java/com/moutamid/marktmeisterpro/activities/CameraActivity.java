@@ -235,12 +235,6 @@ public class CameraActivity extends AppCompatActivity {
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureRequestBuilder.addTarget(surface);
 
-            int rotation = getWindowManager().getDefaultDisplay().getRotation();
-            Log.d("ROTATION3", "rotation " + rotation);
-            int rr = getOrientation(rotation);
-            Log.d("ROTATION3", "rr " + rr);
-            captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, rr);
-
             cameraDevice.createCaptureSession(Collections.singletonList(surface),
                     new CameraCaptureSession.StateCallback() {
                         @Override
@@ -308,22 +302,6 @@ public class CameraActivity extends AppCompatActivity {
         return imageOrientation;
     }
 
-/*
-    private int getOrientation(int rotation) {
-        Log.d("ROTATION3", "OR  " + ORIENTATIONS.get(rotation));
-        int sensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
-        return (sensorOrientation + ORIENTATIONS.get(rotation) + 360) % 360;
-    }
-*/
-
-    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
-    static {
-        ORIENTATIONS.append(Surface.ROTATION_0, 90);
-        ORIENTATIONS.append(Surface.ROTATION_90, 0);
-        ORIENTATIONS.append(Surface.ROTATION_180, 270);
-        ORIENTATIONS.append(Surface.ROTATION_270, 180);
-    }
-
     private void captureImage() {
         try {
             // Create an image capture request
@@ -335,7 +313,9 @@ public class CameraActivity extends AppCompatActivity {
             captureBuilder.set(CaptureRequest.JPEG_QUALITY, (byte) 100);
             captureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO);
             captureBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START);
-
+            int rotation = getWindowManager().getDefaultDisplay().getRotation();
+            int rr = getOrientation(rotation);
+            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, rr);
             // Create a CaptureCallback to handle the capture result
             CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {
                 @Override

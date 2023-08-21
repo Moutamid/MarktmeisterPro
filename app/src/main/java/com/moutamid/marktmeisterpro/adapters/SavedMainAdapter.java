@@ -1,7 +1,6 @@
 package com.moutamid.marktmeisterpro.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.fxn.stash.Stash;
 import com.moutamid.marktmeisterpro.R;
-import com.moutamid.marktmeisterpro.activities.SavedImagesActivity;
+import com.moutamid.marktmeisterpro.interfaces.SavedClickListener;
 import com.moutamid.marktmeisterpro.models.Stall;
-import com.moutamid.marktmeisterpro.models.StallModel;
-import com.moutamid.marktmeisterpro.utilis.Constants;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,10 +26,13 @@ public class SavedMainAdapter extends RecyclerView.Adapter<SavedMainAdapter.Save
     ArrayList<Stall> list;
     ArrayList<Stall> stallAll;
     ImagesAdapter childItemAdapter;
-    public SavedMainAdapter(Context context, ArrayList<Stall> list) {
+    SavedClickListener savedClickListener;
+
+    public SavedMainAdapter(Context context, ArrayList<Stall> list, SavedClickListener savedClickListener) {
         this.context = context;
         this.list = list;
         this.stallAll = new ArrayList<>(list);
+        this.savedClickListener = savedClickListener;
     }
 
     @NonNull
@@ -49,11 +48,9 @@ public class SavedMainAdapter extends RecyclerView.Adapter<SavedMainAdapter.Save
 
         holder.name.setText(stall.getName());
 
-        holder.itemView.setOnClickListener(v -> {
-            Stash.put(Constants.IMAGE, stall.getName());
-            Stash.put(Constants.ID, stall.getApplicationID());
-            context.startActivity(new Intent(context, SavedImagesActivity.class));
-        });
+        holder.applicationID.setText("ID: " + stall.getApplicationID());
+
+        holder.itemView.setOnClickListener(v -> savedClickListener.onClick(list.get(holder.getAdapterPosition())));
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(
                 holder.recyclerView.getContext(),
@@ -115,12 +112,13 @@ public class SavedMainAdapter extends RecyclerView.Adapter<SavedMainAdapter.Save
     }
 
     public class SavedVH extends RecyclerView.ViewHolder {
-        TextView name;
+        TextView name, applicationID;
         RecyclerView recyclerView;
 
         public SavedVH(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.cat);
+            applicationID = itemView.findViewById(R.id.applicationID);
             recyclerView = itemView.findViewById(R.id.stallListRC);
         }
     }

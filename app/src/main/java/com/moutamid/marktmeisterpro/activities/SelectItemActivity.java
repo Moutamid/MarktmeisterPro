@@ -140,6 +140,7 @@ public class SelectItemActivity extends AppCompatActivity {
 
     private void startCamera() {
         startActivity(new Intent(this, CameraActivity.class));
+        finish();
     }
 
 }

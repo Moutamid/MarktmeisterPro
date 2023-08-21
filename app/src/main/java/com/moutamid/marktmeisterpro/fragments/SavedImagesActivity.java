@@ -1,12 +1,17 @@
-package com.moutamid.marktmeisterpro.activities;
+package com.moutamid.marktmeisterpro.fragments;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.fxn.stash.Stash;
@@ -14,6 +19,8 @@ import com.moutamid.marktmeisterpro.R;
 import com.moutamid.marktmeisterpro.adapters.ImagesSubAdapter;
 import com.moutamid.marktmeisterpro.adapters.ImagesSubAdapter;
 import com.moutamid.marktmeisterpro.databinding.ActivitySavedImagesBinding;
+import com.moutamid.marktmeisterpro.fragments.SavedFragment;
+import com.moutamid.marktmeisterpro.fragments.ScanFragment;
 import com.moutamid.marktmeisterpro.models.StallModel;
 import com.moutamid.marktmeisterpro.utilis.Constants;
 
@@ -22,31 +29,33 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SavedImagesActivity extends AppCompatActivity {
+public class SavedImagesActivity extends Fragment {
     ActivitySavedImagesBinding binding;
     ImagesSubAdapter adapter;
     ArrayList<StallModel> list;
     boolean az = true, ro = true;
+    String ID;
+    String NAME;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivitySavedImagesBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = ActivitySavedImagesBinding.inflate(getLayoutInflater(), container, false);
 
         binding.savedRC.setHasFixedSize(false);
-        String NAME = Stash.getString(Constants.IMAGE);
-        String ID = Stash.getString(Constants.ID);
+        NAME = Stash.getString(Constants.IMAGE);
+        ID = Stash.getString(Constants.ID);
 
-        Glide.with(this).load(R.drawable.markt_schwarz).into(binding.logo);
+        Stash.put(Constants.isBACK, true);
 
-        binding.back.setOnClickListener(v -> onBackPressed());
+//        Glide.with(this).load(R.drawable.markt_schwarz).into(binding.logo);
+
+        binding.back.setOnClickListener(v -> requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new SavedFragment()).commit());
 
         binding.name.setText(NAME);
         binding.applicationID.setText("ID: " + ID);
 
         list = new ArrayList<>();
-        list.addAll(Stash.getArrayList(ID, StallModel.class));
 
         binding.sort.setOnClickListener(v -> {
             showPopupMenu(v);
@@ -55,17 +64,26 @@ public class SavedImagesActivity extends AppCompatActivity {
             showFilterMenu(v);
         });
 
-//        String im = list.size() > 1 ? " Images" : " Image";
+
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        list = new ArrayList<>();
+        list.addAll(Stash.getArrayList(ID, StallModel.class));
+
         binding.totalSize.setText("Sie haben " + list.size() + " Bild gespeichert");
 
         list.add(new StallModel(ID, NAME, "", "", "", "", "", "", true));
-        adapter = new ImagesSubAdapter(this, list);
+        adapter = new ImagesSubAdapter(requireContext(), list);
         binding.savedRC.setAdapter(adapter);
-
     }
 
     private void showFilterMenu(View v) {
-        PopupMenu popupMenu = new PopupMenu(SavedImagesActivity.this, v);
+        PopupMenu popupMenu = new PopupMenu(binding.getRoot().getContext(), v);
         popupMenu.getMenuInflater().inflate(R.menu.filter_all_menu, popupMenu.getMenu());
 
         // Set a listener for menu item clicks
@@ -83,7 +101,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                         .filter(stallModel -> stallModel.getNight().equals("Tag") && stallModel.getBeschreibung().equals("vorne")).collect(Collectors.toList());
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -98,7 +116,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -113,7 +131,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -128,7 +146,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -143,7 +161,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -160,7 +178,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -175,7 +193,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -190,7 +208,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -205,7 +223,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -220,7 +238,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -237,7 +255,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -252,7 +270,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -267,7 +285,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -284,7 +302,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -299,7 +317,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -317,7 +335,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 finalList.add(lastItem);
 
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -333,7 +351,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 finalList.add(lastItem);
 
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -349,7 +367,7 @@ public class SavedImagesActivity extends AppCompatActivity {
                 finalList.add(lastItem);
 
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -364,10 +382,14 @@ public class SavedImagesActivity extends AppCompatActivity {
                 ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
                 finalList.add(lastItem);
 
-                adapter = new ImagesSubAdapter(SavedImagesActivity.this, finalList);
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), finalList);
                 binding.savedRC.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
+            } else if (itemId == R.id.reset) {
+                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), list);
+                binding.savedRC.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
 
             return false;
@@ -377,7 +399,7 @@ public class SavedImagesActivity extends AppCompatActivity {
     }
 
     private void showPopupMenu(View v) {
-        PopupMenu popupMenu = new PopupMenu(SavedImagesActivity.this, v);
+        PopupMenu popupMenu = new PopupMenu(binding.getRoot().getContext(), v);
         popupMenu.getMenuInflater().inflate(R.menu.sort_menu, popupMenu.getMenu());
 
         MenuItem atoz = popupMenu.getMenu().getItem(0);

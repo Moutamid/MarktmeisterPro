@@ -42,6 +42,8 @@ public class ScanFragment extends Fragment {
 
         binding = FragmentScanBinding.inflate(getLayoutInflater(), container, false);
 
+        Stash.put(Constants.isBACK, false);
+
         mCodeScanner = new CodeScanner(requireContext(), binding.scannerView);
         mCodeScanner.setDecodeCallback(result -> requireActivity().runOnUiThread(() -> {
             String res = result.getText();
@@ -82,7 +84,6 @@ public class ScanFragment extends Fragment {
                     Stash.put(Constants.applicationID, ID);
                     Stash.put(Constants.SCAN_RESULT, res);
                     startActivity(new Intent(requireContext(), SelectItemActivity.class));
-                    requireActivity().finish();
                 } else {
                     new AlertDialog.Builder(requireContext())
                             .setMessage("Der QR-Code gehört zu einer anderen Veranstaltung")
