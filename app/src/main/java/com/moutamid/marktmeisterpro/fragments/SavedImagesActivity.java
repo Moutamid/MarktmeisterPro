@@ -57,7 +57,7 @@ public class SavedImagesActivity extends Fragment {
             showPopupMenu(v);
         });
         binding.filter.setOnClickListener(v -> {
-            showFilterMenu(v);
+            showFilterMenu2(v);
         });
 
 
@@ -450,9 +450,7 @@ public class SavedImagesActivity extends Fragment {
                 filterList("Sonstige", list);
                 return true;
             } else if (itemId == R.id.reset) {
-                adapter = new ImagesSubAdapter(binding.getRoot().getContext(), mainlist);
-                binding.savedRC.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
+                adapter.getFilter().filter("");
             }
 
             return false;
@@ -462,30 +460,15 @@ public class SavedImagesActivity extends Fragment {
     }
 
     private void filterList(String beschreibung, ArrayList<StallModel> list) {
-        List<StallModel> sublist = new ArrayList<>(list.subList(0, list.size() - 1));
-        ArrayList<StallModel> originalList = new ArrayList<>(sublist);
-        StallModel lastItem = list.get(list.size() - 1);
-        List<StallModel> filteredList = originalList.stream()
-                .filter(stallModel -> stallModel.getBeschreibung().equals(beschreibung)).collect(Collectors.toList());
-        ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
-        finalList.add(lastItem);
-
-        adapter = new ImagesSubAdapter(requireContext(), finalList);
-        binding.savedRC.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        Stash.put(Constants.isDAYNIGHT, false);
+        adapter.getFilter().filter(beschreibung);
     }
 
     private void geschaftFilter(String tag, String cat, ArrayList<StallModel> list) {
-        List<StallModel> sublist = new ArrayList<>(list.subList(0, list.size() - 1));
-        ArrayList<StallModel> originalList = new ArrayList<>(sublist);
-        StallModel lastItem = list.get(list.size() - 1);
-        List<StallModel> filteredList = originalList.stream()
-                .filter(stallModel -> stallModel.getNight().equals(tag) && stallModel.getBeschreibung().equals(cat)).collect(Collectors.toList());
-        ArrayList<StallModel> finalList = new ArrayList<>(filteredList);
-        finalList.add(lastItem);
-        adapter = new ImagesSubAdapter(requireContext(), finalList);
-        binding.savedRC.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        Stash.put(Constants.isDAYNIGHT, true);
+        Stash.put(Constants.WHATDAY, tag);
+        Stash.put(Constants.CAT, cat);
+        adapter.getFilter().filter(cat);
     }
 
     private void showPopupMenu(View v) {

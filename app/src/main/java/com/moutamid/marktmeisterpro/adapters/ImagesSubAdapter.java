@@ -14,6 +14,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -35,15 +37,17 @@ import com.moutamid.marktmeisterpro.utilis.Constants;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 
-public class ImagesSubAdapter extends RecyclerView.Adapter<ImagesSubAdapter.ImagesVH> {
+public class ImagesSubAdapter extends RecyclerView.Adapter<ImagesSubAdapter.ImagesVH> implements Filterable {
     Context context;
     ArrayList<StallModel> list;
+    ArrayList<StallModel> listAll;
 
     public ImagesSubAdapter(Context context, ArrayList<StallModel> list) {
         this.context = context;
         this.list = list;
-        Toast.makeText(context, "Listss   " + list.size(), Toast.LENGTH_SHORT).show();
+        this.listAll = new ArrayList<>(list);
     }
 
     @NonNull
@@ -212,6 +216,52 @@ public class ImagesSubAdapter extends RecyclerView.Adapter<ImagesSubAdapter.Imag
     public int getItemCount() {
         return list.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+
+    Filter filter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            ArrayList<StallModel> filterList = new ArrayList<>();
+            if (charSequence.toString().isEmpty()){
+                filterList.addAll(listAll);
+            } else {
+                if(Stash.getBoolean(Constants.isDAYNIGHT)){
+                    String tag = Stash.getString(Constants.WHATDAY);
+                    for (StallModel listModel : listAll) {
+                        if (
+                                listModel.getBeschreibung().equalsIgnoreCase(charSequence.toString()) &&
+                                listModel.getNight().equalsIgnoreCase(tag)
+                        ) {
+                            filterList.add(listModel);
+                        }
+                    }
+                } else {
+                    for (StallModel listModel : listAll) {
+                        if (
+                                listModel.getBeschreibung().equalsIgnoreCase(charSequence.toString())
+                        ) {
+                            filterList.add(listModel);
+                        }
+                    }
+                }
+            }
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filterList;
+
+            return filterResults;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            list.clear();
+            list.addAll((Collection<? extends StallModel>) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public class ImagesVH extends RecyclerView.ViewHolder {
         ImageView image, add;
