@@ -26,10 +26,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -76,8 +78,8 @@ public class CameraActivity extends AppCompatActivity {
         });
 
         if (Stash.getString(Constants.Resolution, Constants.LARGE).equals(Constants.SMALL)) {
-            width = 240;
-            height = 240;
+            width = 340;
+            height = 340;
         } else if (Stash.getString(Constants.Resolution, Constants.LARGE).equals(Constants.MEDIUM)) {
             width = 640;
             height = 480;
@@ -103,8 +105,8 @@ public class CameraActivity extends AppCompatActivity {
                     imageReader.setOnImageAvailableListener(reader -> {
                         // Handle available images
                     }, null);
-                  //  configureTextureViewSize(width, height);
                     createCameraPreview(); // Create the camera preview
+//                    configureTextureViewSize(height);
                 }
 
                 @Override
@@ -263,12 +265,16 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
-/*    private void configureTextureViewSize(int width, int height) {
+    private void configureTextureViewSize(int height) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int heightInPixels = height;
+        float density = displayMetrics.density;
+        int heightInDp = (int) (heightInPixels / density);
         ViewGroup.LayoutParams params = binding.textureView.getLayoutParams();
-        params.width = width;
-        params.height = height;
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.height = heightInDp;
         binding.textureView.setLayoutParams(params);
-    }*/
+    }
 
     private int getOrientation(int rotation) {
         CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
@@ -320,7 +326,6 @@ public class CameraActivity extends AppCompatActivity {
             CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {
                 @Override
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-
                     Image capturedImage =  imageReader.acquireLatestImage();
                     saveCapturedImage(capturedImage);
                 }
@@ -347,16 +352,6 @@ public class CameraActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
-    private CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {
-        @Override
-        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-            Integer afState = result.get(CaptureResult.CONTROL_AF_STATE);
-            if (afState != null && afState == CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED) {
-                // Focus has been achieved
-            }
-        }
-    };
 
 
 }

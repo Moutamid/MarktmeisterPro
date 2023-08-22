@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.exifinterface.media.ExifInterface;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -38,6 +39,34 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesVH> 
         StallModel model = list.get(holder.getAdapterPosition());
 
         Glide.with(context).load(model.getImageURL()).into(holder.image);
+        int capturedImageOrientation = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(model.getImageURL());
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_NORMAL:
+                    capturedImageOrientation = 0;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    capturedImageOrientation = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    capturedImageOrientation = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    capturedImageOrientation = 270;
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (capturedImageOrientation == 90 || capturedImageOrientation == 270) {
+            holder.image.setRotation(-90); // Rotate the ImageView for horizontal images
+        } else {
+            holder.image.setRotation(0);  // Reset rotation for portrait images
+        }
+
         holder.cat.setText(model.getItem());
         holder.type.setText(model.getBeschreibung());
 

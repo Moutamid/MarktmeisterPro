@@ -1,6 +1,7 @@
 package com.moutamid.marktmeisterpro.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.exifinterface.media.ExifInterface;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.fxn.stash.Stash;
 import com.moutamid.marktmeisterpro.databinding.ActivityPictureResultBinding;
 import com.moutamid.marktmeisterpro.fragments.SavedImagesActivity;
@@ -31,8 +33,40 @@ public class PictureResultActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         path = Stash.getString("img");
-        Log.d("PATH", "Saved  " + path);
-        Glide.with(this).load(path).into(binding.image);
+        Log.d("PATH123", "Saved  " + path);
+        Glide.with(this).load(path)
+                .skipMemoryCache(true) // Skip memory cache
+                .diskCacheStrategy(DiskCacheStrategy.NONE) // Skip disk cache
+                .into(binding.image);
+
+        int capturedImageOrientation = 0;
+
+        try {
+            ExifInterface exifInterface = new ExifInterface(path);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_NORMAL:
+                    capturedImageOrientation = 0;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    capturedImageOrientation = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    capturedImageOrientation = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    capturedImageOrientation = 270;
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (capturedImageOrientation == 90 || capturedImageOrientation == 270) {
+            binding.image.setRotation(-90); // Rotate the ImageView for horizontal images
+        } else {
+            binding.image.setRotation(0);  // Reset rotation for portrait images
+        }
 
         binding.save.setOnClickListener(v -> {
             String name = Stash.getString(Constants.NAME);
@@ -84,6 +118,9 @@ public class PictureResultActivity extends AppCompatActivity {
 
         binding.retake.setOnClickListener(v -> {
             Stash.clear("img");
+            binding.image.setImageResource(0);
+            Glide.get(PictureResultActivity.this).clearMemory();
+            new Thread(() -> Glide.get(PictureResultActivity.this).clearDiskCache()).start();
             onBackPressed();
         });
 
