@@ -450,6 +450,7 @@ public class SavedImagesActivity extends Fragment {
                 filterList("Sonstige", list);
                 return true;
             } else if (itemId == R.id.reset) {
+                Stash.put(Constants.isDAYNIGHT, false);
                 adapter.getFilter().filter("");
             }
 
