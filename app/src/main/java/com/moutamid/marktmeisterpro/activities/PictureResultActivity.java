@@ -42,11 +42,11 @@ public class PictureResultActivity extends AppCompatActivity {
         int capturedImageOrientation = Constants.rotateImage(path);
         Log.d("PATH123", "capturedImageOrientation  " + capturedImageOrientation);
 
-        if (capturedImageOrientation == 90 || capturedImageOrientation == 270) {
-            binding.image.setRotation(-90); // Rotate the ImageView for horizontal images
-        } else {
-            binding.image.setRotation(0);  // Reset rotation for portrait images
-        }
+//        if (capturedImageOrientation == 90 || capturedImageOrientation == 270) {
+//            binding.image.setRotation(-90); // Rotate the ImageView for horizontal images
+//        } else {
+//            binding.image.setRotation(0);  // Reset rotation for portrait images
+//        }
 
         binding.save.setOnClickListener(v -> {
             String name = Stash.getString(Constants.NAME);

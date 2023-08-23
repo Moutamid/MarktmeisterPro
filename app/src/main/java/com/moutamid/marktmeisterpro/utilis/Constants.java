@@ -44,6 +44,7 @@ public class Constants {
     public static final String DATEFORMATE = "yyMMdd";
     public static final String isBACK = "isBACK";
     public static final String isPICTURE = "isPICTURE";
+    public static final String ROTATION = "ROTATION";
     public static final String isDAYNIGHT = "isDAYNIGHT";
     public static final String WHATDAY = "WHATDAY";
     public static final String CAT = "CAT";

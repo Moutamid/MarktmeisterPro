@@ -167,15 +167,6 @@ public class ImagesSubAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         ImageView close = dialog.findViewById(R.id.close);
         Glide.with(context).load(model.getImageURL()).into(image);
 
-        int capturedImageOrientation = Constants.rotateImage(model.getImageURL());
-
-        if (capturedImageOrientation == 90 || capturedImageOrientation == 270) {
-            image.setRotation(-90); // Rotate the ImageView for horizontal images
-        } else {
-            image.setRotation(0);  // Reset rotation for portrait images
-        }
-
-
         close.setOnClickListener(v -> dialog.dismiss());
 
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

@@ -40,13 +40,6 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesVH> 
         StallModel model = list.get(holder.getAdapterPosition());
 
         Glide.with(context).load(model.getImageURL()).into(holder.image);
-        int capturedImageOrientation = Constants.rotateImage(model.getImageURL());
-
-        if (capturedImageOrientation == 90 || capturedImageOrientation == 270) {
-            holder.image.setRotation(-90); // Rotate the ImageView for horizontal images
-        } else {
-            holder.image.setRotation(0);  // Reset rotation for portrait images
-        }
 
         holder.cat.setText(model.getItem());
         holder.type.setText(model.getBeschreibung());

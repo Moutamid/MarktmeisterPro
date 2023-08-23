@@ -9,8 +9,13 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -34,11 +39,13 @@ import android.view.TextureView;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.fxn.stash.Stash;
 import com.moutamid.marktmeisterpro.R;
 import com.moutamid.marktmeisterpro.databinding.ActivityCameraBinding;
 import com.moutamid.marktmeisterpro.utilis.Constants;
+import com.moutamid.marktmeisterpro.utilis.SimpleOrientationListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,7 +57,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 
-public class CameraActivity extends AppCompatActivity {
+public class CameraActivity extends AppCompatActivity{
     ActivityCameraBinding binding;
     int width, height;
     private CameraDevice cameraDevice;
@@ -59,6 +66,7 @@ public class CameraActivity extends AppCompatActivity {
     private CaptureRequest.Builder captureRequestBuilder;
     private ImageReader imageReader;
     private Handler backgroundHandler;
+    boolean isVertical;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +81,22 @@ public class CameraActivity extends AppCompatActivity {
 
         binding.back.setOnClickListener(v -> onBackPressed());
 
-        binding.flash.setOnClickListener(v -> {
+        SimpleOrientationListener mOrientationListener = new SimpleOrientationListener(this) {
 
-        });
+            @Override
+            public void onSimpleOrientationChanged(int orientation) {
+                Log.d("CHECK123", "orientation   " + orientation);
+                if(orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    isVertical = false;
+                    Log.d("CHECK123", "LANDSCAPE");
+                }else if(orientation == Configuration.ORIENTATION_PORTRAIT){
+                    isVertical = true;
+                    Log.d("CHECK123", "PORTRAIT");
+                }
+            }
+        };
+        mOrientationListener.enable();
+
 
         if (Stash.getString(Constants.Resolution, Constants.LARGE).equals(Constants.SMALL)) {
             width = 340;
@@ -277,6 +298,9 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     private int getOrientation(int rotation) {
+
+
+
         CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         int sensorOrientation = 0;
 
@@ -319,9 +343,24 @@ public class CameraActivity extends AppCompatActivity {
             captureBuilder.set(CaptureRequest.JPEG_QUALITY, (byte) 100);
             captureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO);
             captureBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START);
-            int rotation = getWindowManager().getDefaultDisplay().getRotation();
-            int rr = getOrientation(rotation);
-            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, rr);
+
+
+            int ROTATION = Stash.getInt(Constants.ROTATION, 90);
+
+            if (isVertical) {
+                if (ROTATION == 0) {
+                    captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, 90);
+                } else if (ROTATION == 180) {
+                    captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, 270);
+                }
+            } else {
+                if (ROTATION == 90) {
+                    captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, 180);
+                }
+            }
+
+
+
             // Create a CaptureCallback to handle the capture result
             CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {
                 @Override
@@ -352,6 +391,4 @@ public class CameraActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
-
 }
