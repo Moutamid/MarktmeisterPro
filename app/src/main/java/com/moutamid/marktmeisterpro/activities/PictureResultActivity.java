@@ -39,28 +39,8 @@ public class PictureResultActivity extends AppCompatActivity {
                 .diskCacheStrategy(DiskCacheStrategy.NONE) // Skip disk cache
                 .into(binding.image);
 
-        int capturedImageOrientation = 0;
-
-        try {
-            ExifInterface exifInterface = new ExifInterface(path);
-            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_NORMAL:
-                    capturedImageOrientation = 0;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    capturedImageOrientation = 90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    capturedImageOrientation = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    capturedImageOrientation = 270;
-                    break;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        int capturedImageOrientation = Constants.rotateImage(path);
+        Log.d("PATH123", "capturedImageOrientation  " + capturedImageOrientation);
 
         if (capturedImageOrientation == 90 || capturedImageOrientation == 270) {
             binding.image.setRotation(-90); // Rotate the ImageView for horizontal images

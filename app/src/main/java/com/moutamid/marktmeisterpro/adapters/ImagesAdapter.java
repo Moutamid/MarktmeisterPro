@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 import com.moutamid.marktmeisterpro.R;
 import com.moutamid.marktmeisterpro.models.StallModel;
+import com.moutamid.marktmeisterpro.utilis.Constants;
 
 import java.util.ArrayList;
 
@@ -39,27 +40,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesVH> 
         StallModel model = list.get(holder.getAdapterPosition());
 
         Glide.with(context).load(model.getImageURL()).into(holder.image);
-        int capturedImageOrientation = 0;
-        try {
-            ExifInterface exifInterface = new ExifInterface(model.getImageURL());
-            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_NORMAL:
-                    capturedImageOrientation = 0;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    capturedImageOrientation = 90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    capturedImageOrientation = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    capturedImageOrientation = 270;
-                    break;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        int capturedImageOrientation = Constants.rotateImage(model.getImageURL());
 
         if (capturedImageOrientation == 90 || capturedImageOrientation == 270) {
             holder.image.setRotation(-90); // Rotate the ImageView for horizontal images

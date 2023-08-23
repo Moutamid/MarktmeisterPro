@@ -39,10 +39,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class ImagesSubAdapter extends RecyclerView.Adapter<ImagesSubAdapter.ImagesVH> implements Filterable {
+public class ImagesSubAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
     Context context;
     ArrayList<StallModel> list;
     ArrayList<StallModel> listAll;
+
+    private static final int VIEW_TYPE_IMAGE = 0;
+    private static final int VIEW_TYPE_BUTTON = 1;
 
     public ImagesSubAdapter(Context context, ArrayList<StallModel> list) {
         this.context = context;
@@ -52,110 +55,99 @@ public class ImagesSubAdapter extends RecyclerView.Adapter<ImagesSubAdapter.Imag
 
     @NonNull
     @Override
-    public ImagesVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ImagesVH(LayoutInflater.from(context).inflate(R.layout.image_layout2, parent, false));
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        if (viewType == VIEW_TYPE_IMAGE) {
+            View itemView = inflater.inflate(R.layout.image_layout2, parent, false);
+            return new ImagesVH(itemView);
+        } else {
+            View itemView = inflater.inflate(R.layout.add_button, parent, false);
+            return new ButtonVH(itemView);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ImagesVH holder, int position) {
-        StallModel model = list.get(holder.getAdapterPosition());
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        GestureDetector gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                // Handle the double-click event here
-                showImage(model);
-                return true;
-            }
-        });
+        if (holder instanceof ImagesVH) {
+            StallModel model = list.get(holder.getAdapterPosition());
 
-        holder.image.setOnTouchListener((v, event) -> {
-            gestureDetector.onTouchEvent(event);
-            return true;
-        });
-
-        Log.d("PATH123" , "   " + model.isAdd());
-
-        if (model.isAdd()) {
-            holder.add.setVisibility(View.VISIBLE);
-            holder.data.setVisibility(View.GONE);
-            holder.mainCard.setCardBackgroundColor(context.getResources().getColor(R.color.background));
-
-            holder.mainCard.setOnClickListener(v -> {
-                Stash.put(Constants.NAME, model.getStallName());
-                Stash.put(Constants.applicationID, model.getApplicationID());
-                context.startActivity(new Intent(context, SelectItemActivity.class));
+            GestureDetector gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onDoubleTap(MotionEvent e) {
+                    // Handle the double-click event here
+                    showImage(model);
+                    return true;
+                }
             });
 
-        } else {
-            Glide.with(context).load(model.getImageURL()).into(holder.image);
+            ((ImagesVH) holder).image.setOnTouchListener((v, event) -> {
+                gestureDetector.onTouchEvent(event);
+                return true;
+            });
 
-            int capturedImageOrientation = 0;
-            try {
-                ExifInterface exifInterface = new ExifInterface(model.getImageURL());
-                int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-                switch (orientation) {
-                    case ExifInterface.ORIENTATION_NORMAL:
-                        capturedImageOrientation = 0;
-                        break;
-                    case ExifInterface.ORIENTATION_ROTATE_90:
-                        capturedImageOrientation = 90;
-                        break;
-                    case ExifInterface.ORIENTATION_ROTATE_180:
-                        capturedImageOrientation = 180;
-                        break;
-                    case ExifInterface.ORIENTATION_ROTATE_270:
-                        capturedImageOrientation = 270;
-                        break;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Glide.with(context).load(model.getImageURL()).into(((ImagesVH) holder).image);
+
+            int capturedImageOrientation = Constants.rotateImage(model.getImageURL());
 
             if (capturedImageOrientation == 90 || capturedImageOrientation == 270) {
-                holder.image.setRotation(-90); // Rotate the ImageView for horizontal images
+                ((ImagesVH) holder).image.setRotation(-90); // Rotate the ImageView for horizontal images
             } else {
-                holder.image.setRotation(0);  // Reset rotation for portrait images
+                ((ImagesVH) holder).image.setRotation(0);  // Reset rotation for portrait images
             }
 
-            holder.cat.setText(model.getItem());
-            holder.type.setText(model.getBeschreibung());
+            ((ImagesVH) holder).cat.setText(model.getItem());
+            ((ImagesVH) holder).type.setText(model.getBeschreibung());
+
+            ((ImagesVH) holder).delete.setOnClickListener(v -> {
+                ArrayList<StallModel> stall = Stash.getArrayList(model.getApplicationID(), StallModel.class);
+                ArrayList<Stall> allStalls = Stash.getArrayList(Constants.STALL_LIST, Stall.class);
+                new AlertDialog.Builder(context)
+                        .setMessage("Möchten Sie dieses Foto wirklich löschen?")
+                        .setNegativeButton("Neín", ((dialog, which) -> dialog.dismiss()))
+                        .setPositiveButton("Foto löschen", ((dialog, which) -> {
+                            for (int i = 0; i < stall.size(); i++) {
+                                if (stall.get(i).getImageURL().equals(model.getImageURL())) {
+
+                                    for (int j = 0; j < allStalls.size(); j++) {
+                                        if (allStalls.get(j).getApplicationID().equals(model.getApplicationID())) {
+                                            allStalls.get(j).getStall().remove(i);
+                                        }
+                                        if (allStalls.get(j).getStall().size() == 0) {
+                                            allStalls.remove(j);
+                                        }
+                                    }
+                                    File fileToDelete = new File(stall.get(i).getImageURL());
+                                    if (fileToDelete.exists()) {
+                                        fileToDelete.delete();
+                                    }
+                                    stall.remove(i);
+                                    list.remove(i);
+                                    notifyItemRemoved(i);
+                                    break;
+                                }
+                            }
+                            Stash.put(model.getApplicationID(), stall);
+                            Stash.put(Constants.STALL_LIST, allStalls);
+                        }))
+                        .show();
+            });
+
         }
 
-        holder.delete.setOnClickListener(v -> {
-            ArrayList<StallModel> stall = Stash.getArrayList(model.getApplicationID(), StallModel.class);
-            ArrayList<Stall> allStalls = Stash.getArrayList(Constants.STALL_LIST, Stall.class);
-            new AlertDialog.Builder(context)
-                    .setMessage("Möchten Sie dieses Foto wirklich löschen?")
-                    .setNegativeButton("Neín", ((dialog, which) -> dialog.dismiss()))
-                    .setPositiveButton("Foto löschen", ((dialog, which) -> {
-                        for (int i = 0; i < stall.size(); i++) {
-                            if (stall.get(i).getImageURL().equals(model.getImageURL())) {
 
-                                for (int j = 0; j < allStalls.size(); j++) {
-                                    if (allStalls.get(j).getApplicationID().equals(model.getApplicationID())) {
-                                        allStalls.get(j).getStall().remove(i);
-                                    }
-                                    if (allStalls.get(j).getStall().size() == 0) {
-                                        allStalls.remove(j);
-                                    }
-                                }
-                                File fileToDelete = new File(stall.get(i).getImageURL());
-                                if (fileToDelete.exists()) {
-                                    fileToDelete.delete();
-                                }
-                                stall.remove(i);
-                                list.remove(i);
-                                notifyItemRemoved(i);
-                                break;
-                            }
-                        }
-                        Stash.put(model.getApplicationID(), stall);
-                        Stash.put(Constants.STALL_LIST, allStalls);
-                    }))
-                    .show();
-        });
 
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position < list.size()) {
+            return VIEW_TYPE_IMAGE;
+        } else {
+            return VIEW_TYPE_BUTTON;
+        }
     }
 
     public void updateData(ArrayList<StallModel> newData) {
@@ -175,27 +167,7 @@ public class ImagesSubAdapter extends RecyclerView.Adapter<ImagesSubAdapter.Imag
         ImageView close = dialog.findViewById(R.id.close);
         Glide.with(context).load(model.getImageURL()).into(image);
 
-        int capturedImageOrientation = 0;
-        try {
-            ExifInterface exifInterface = new ExifInterface(model.getImageURL());
-            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_NORMAL:
-                    capturedImageOrientation = 0;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    capturedImageOrientation = 90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    capturedImageOrientation = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    capturedImageOrientation = 270;
-                    break;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        int capturedImageOrientation = Constants.rotateImage(model.getImageURL());
 
         if (capturedImageOrientation == 90 || capturedImageOrientation == 270) {
             image.setRotation(-90); // Rotate the ImageView for horizontal images
@@ -214,7 +186,7 @@ public class ImagesSubAdapter extends RecyclerView.Adapter<ImagesSubAdapter.Imag
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list.size() + 1;
     }
 
     @Override
@@ -226,15 +198,15 @@ public class ImagesSubAdapter extends RecyclerView.Adapter<ImagesSubAdapter.Imag
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
             ArrayList<StallModel> filterList = new ArrayList<>();
-            if (charSequence.toString().isEmpty()){
+            if (charSequence.toString().isEmpty()) {
                 filterList.addAll(listAll);
             } else {
-                if(Stash.getBoolean(Constants.isDAYNIGHT)){
+                if (Stash.getBoolean(Constants.isDAYNIGHT)) {
                     String tag = Stash.getString(Constants.WHATDAY);
                     for (StallModel listModel : listAll) {
                         if (
                                 listModel.getBeschreibung().equalsIgnoreCase(charSequence.toString()) &&
-                                listModel.getNight().equalsIgnoreCase(tag)
+                                        listModel.getNight().equalsIgnoreCase(tag)
                         ) {
                             filterList.add(listModel);
                         }
@@ -263,22 +235,45 @@ public class ImagesSubAdapter extends RecyclerView.Adapter<ImagesSubAdapter.Imag
         }
     };
 
-    public class ImagesVH extends RecyclerView.ViewHolder {
-        ImageView image, add;
-        TextView cat, type;
-        RelativeLayout data;
-        MaterialCardView mainCard, delete;
+public class ImagesVH extends RecyclerView.ViewHolder {
+    ImageView image;
+    TextView cat, type;
+    RelativeLayout data;
+    MaterialCardView mainCard, delete;
 
-        public ImagesVH(@NonNull View itemView) {
-            super(itemView);
-            mainCard = itemView.findViewById(R.id.mainCard);
-            data = itemView.findViewById(R.id.data);
-            cat = itemView.findViewById(R.id.cat);
-            type = itemView.findViewById(R.id.type);
-            image = itemView.findViewById(R.id.image);
-            delete = itemView.findViewById(R.id.delete);
-            add = itemView.findViewById(R.id.add);
-        }
+    public ImagesVH(@NonNull View itemView) {
+        super(itemView);
+        mainCard = itemView.findViewById(R.id.mainCard);
+        data = itemView.findViewById(R.id.data);
+        cat = itemView.findViewById(R.id.cat);
+        type = itemView.findViewById(R.id.type);
+        image = itemView.findViewById(R.id.image);
+        delete = itemView.findViewById(R.id.delete);
     }
+}
+
+public class ButtonVH extends RecyclerView.ViewHolder {
+    MaterialCardView mainCard;
+
+    public ButtonVH(@NonNull View itemView) {
+        super(itemView);
+        mainCard = itemView.findViewById(R.id.mainCard);
+
+        mainCard.setOnClickListener(v -> {
+            int position = getAdapterPosition();
+
+            // Ensure the position is valid and it's the last item
+            if (position != RecyclerView.NO_POSITION && position == list.size()) {
+                // Get the resource ID of the last image
+                StallModel model = list.get(position - 1);
+                // Open the new activity and pass the image resource ID
+                Stash.put(Constants.NAME, model.getStallName());
+                Stash.put(Constants.applicationID, model.getApplicationID());
+                context.startActivity(new Intent(context, SelectItemActivity.class));
+            }
+        });
+
+    }
+}
 
 }

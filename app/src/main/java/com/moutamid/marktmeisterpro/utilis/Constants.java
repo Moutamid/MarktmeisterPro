@@ -15,11 +15,13 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Window;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
+import androidx.exifinterface.media.ExifInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,6 +89,37 @@ public class Constants {
 
     public static void dismissDialog() {
         dialog.dismiss();
+    }
+
+    public static int rotateImage(String path){
+        int capturedImageOrientation = 0;
+
+        try {
+            ExifInterface exifInterface = new ExifInterface(path);
+
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+            Log.d("PATH123", "Original orientation: " + orientation);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_NORMAL:
+                    capturedImageOrientation = 0;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    capturedImageOrientation = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    capturedImageOrientation = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    capturedImageOrientation = 270;
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return capturedImageOrientation;
     }
 
     public static void checkApp(Activity activity) {
