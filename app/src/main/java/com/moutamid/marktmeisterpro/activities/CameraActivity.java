@@ -299,7 +299,7 @@ public class CameraActivity extends AppCompatActivity{
             Surface surface = new Surface(texture);
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureRequestBuilder.addTarget(surface);
-
+            captureRequestBuilder.set(CaptureRequest.JPEG_QUALITY, (byte) 100);
             cameraDevice.createCaptureSession(Collections.singletonList(surface),
                     new CameraCaptureSession.StateCallback() {
                         @Override
