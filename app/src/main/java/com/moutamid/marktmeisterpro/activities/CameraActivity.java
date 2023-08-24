@@ -25,6 +25,7 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
+import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
@@ -33,6 +34,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
@@ -53,9 +55,12 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 public class CameraActivity extends AppCompatActivity{
     ActivityCameraBinding binding;
@@ -66,6 +71,7 @@ public class CameraActivity extends AppCompatActivity{
     private CaptureRequest.Builder captureRequestBuilder;
     private ImageReader imageReader;
     private Handler backgroundHandler;
+    StreamConfigurationMap streamConfigurationMap;
     boolean isVertical;
 
     @Override
@@ -115,6 +121,7 @@ public class CameraActivity extends AppCompatActivity{
         try {
             cameraId = cameraManager.getCameraIdList()[0]; // Use the first camera (rear camera)
             cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId); // Initialize cameraCharacteristics
+            streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
@@ -149,6 +156,37 @@ public class CameraActivity extends AppCompatActivity{
         binding.camera.setOnClickListener(v -> captureImage());
 
     }
+
+    private static Size chooseOptimalSize(Size[] choices, int desiredWidth, int desiredHeight) {
+        List<Size> suitableSizes = new ArrayList<>();
+
+        for (Size option : choices) {
+            if (option.getWidth() == desiredWidth && option.getHeight() == desiredHeight) {
+                return option; // Exact match, return it
+            }
+
+            if (option.getHeight() == option.getWidth() * desiredHeight / desiredWidth &&
+                    option.getWidth() >= desiredWidth && option.getHeight() >= desiredHeight) {
+                suitableSizes.add(option);
+            }
+        }
+
+        // If no suitable size is found, return the largest available size
+        if (suitableSizes.size() > 0) {
+            return Collections.min(suitableSizes, new CompareSizesByArea());
+        } else {
+            return choices[0]; // Fallback to the first available size
+        }
+    }
+
+    private static class CompareSizesByArea implements Comparator<Size> {
+        @Override
+        public int compare(Size lhs, Size rhs) {
+            // Compare sizes by their areas
+            return Long.signum((long) lhs.getWidth() * lhs.getHeight() - (long) rhs.getWidth() * rhs.getHeight());
+        }
+    }
+
 
 
     private void saveCapturedImage(Image img) {
@@ -216,17 +254,21 @@ public class CameraActivity extends AppCompatActivity{
     }
 
     private void createCameraPreview() {
+
+        Size[] outputSizes = streamConfigurationMap.getOutputSizes(SurfaceTexture.class);
+        Size bestSize = chooseOptimalSize(outputSizes, width, height);
+
         try {
             SurfaceTexture texture;
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 texture = binding.textureView.getSurfaceTexture();
-                texture.setDefaultBufferSize(width, height);
+                texture.setDefaultBufferSize(bestSize.getWidth(), bestSize.getHeight());
                 camera(texture);
             } else {
                 binding.textureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
                     @Override
                     public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
-                        surface.setDefaultBufferSize(CameraActivity.this.width, CameraActivity.this.height);
+                        surface.setDefaultBufferSize(bestSize.getWidth(), bestSize.getHeight());
                         camera(surface);
                     }
 
@@ -286,52 +328,6 @@ public class CameraActivity extends AppCompatActivity{
         }
     }
 
-    private void configureTextureViewSize(int height) {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int heightInPixels = height;
-        float density = displayMetrics.density;
-        int heightInDp = (int) (heightInPixels / density);
-        ViewGroup.LayoutParams params = binding.textureView.getLayoutParams();
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height = heightInDp;
-        binding.textureView.setLayoutParams(params);
-    }
-
-    private int getOrientation(int rotation) {
-
-
-
-        CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-        int sensorOrientation = 0;
-
-        try {
-            CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraDevice.getId());
-            sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
-
-        int degrees = 0;
-        switch (rotation) {
-            case Surface.ROTATION_0:
-                degrees = 0;
-                break;
-            case Surface.ROTATION_90:
-                degrees = 90;
-                break;
-            case Surface.ROTATION_180:
-                degrees = 180;
-                break;
-            case Surface.ROTATION_270:
-                degrees = 270;
-                break;
-        }
-
-        // Calculate the final image orientation
-        int imageOrientation = (sensorOrientation - degrees + 360) % 360;
-        return imageOrientation;
-    }
-
     private void captureImage() {
         try {
             // Create an image capture request
@@ -358,8 +354,6 @@ public class CameraActivity extends AppCompatActivity{
                     captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, 180);
                 }
             }
-
-
 
             // Create a CaptureCallback to handle the capture result
             CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {

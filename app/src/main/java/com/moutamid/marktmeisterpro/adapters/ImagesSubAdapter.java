@@ -90,14 +90,6 @@ public class ImagesSubAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             Glide.with(context).load(model.getImageURL()).into(((ImagesVH) holder).image);
 
-            int capturedImageOrientation = Constants.rotateImage(model.getImageURL());
-
-            if (capturedImageOrientation == 90 || capturedImageOrientation == 270) {
-                ((ImagesVH) holder).image.setRotation(-90); // Rotate the ImageView for horizontal images
-            } else {
-                ((ImagesVH) holder).image.setRotation(0);  // Reset rotation for portrait images
-            }
-
             ((ImagesVH) holder).cat.setText(model.getItem());
             ((ImagesVH) holder).type.setText(model.getBeschreibung());
 
@@ -148,12 +140,6 @@ public class ImagesSubAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         } else {
             return VIEW_TYPE_BUTTON;
         }
-    }
-
-    public void updateData(ArrayList<StallModel> newData) {
-        list.clear();
-        list.addAll(newData);
-        notifyDataSetChanged();
     }
 
     private void showImage(StallModel model) {
