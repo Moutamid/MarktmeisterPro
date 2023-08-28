@@ -69,8 +69,8 @@ public class SavedImagesActivity extends Fragment {
         super.onResume();
         mainlist = new ArrayList<>();
         mainlist.addAll(Stash.getArrayList(ID, StallModel.class));
-
-        binding.totalSize.setText("Sie haben " + mainlist.size() + " Bild gespeichert");
+        String s = mainlist.size() > 1 ? " Bilder" : " Bild";
+        binding.totalSize.setText("Sie haben " + mainlist.size() + s + " gespeichert");
         adapter = new ImagesSubAdapter(requireContext(), mainlist);
         binding.savedRC.setAdapter(adapter);
         adapter.notifyDataSetChanged();
