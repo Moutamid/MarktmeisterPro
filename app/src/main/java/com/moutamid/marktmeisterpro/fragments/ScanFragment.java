@@ -80,6 +80,11 @@ public class ScanFragment extends Fragment {
                 if (go) {
                     ID = parts[1].split(": ")[1];
                     name = parts[2].split(": ")[1];
+
+                    if (name.equalsIgnoreCase("Suse Sahne")){
+                        name = "Süße Sahne";
+                    }
+
                     Stash.put(Constants.NAME, name);
                     Stash.put(Constants.applicationID, ID);
                     Stash.put(Constants.SCAN_RESULT, res);
